@@ -1,4 +1,6 @@
 package persistencia;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -40,9 +42,12 @@ class PoolConexiones
 
 	  if (instance == null){
 	    Properties connectionProps = new Properties();
-	    connectionProps.put("user", "root");
-	    //connectionProps.put("password", "root");
-
+	    try {
+			connectionProps.load(new FileInputStream("mysql_Login.txt"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	   instance = DriverManager.getConnection(SGBDURL, connectionProps);
 	  }
 	  return instance;
