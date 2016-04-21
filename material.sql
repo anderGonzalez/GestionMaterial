@@ -78,6 +78,17 @@ CREATE TABLE prestamo
  CONSTRAINT fk_prestamo_recurso FOREIGN KEY (idRecurso) REFERENCES recurso(idRecurso)
 );
 
+CREATE TABLE penalizaciones --bukau gabe do
+(
+ dniPenalizado		INT NOT NULL,
+ idPrestamo			INT NOT NULL,
+ fechaInicio		DATETIME NOT NULL,
+ fechaFin			DATETIME NOT NULL,
+ CONSTRAINT pk_penalizaciones PRIMARY KEY (idRecurso, fechaInicio, dniPrestatario),
+ CONSTRAINT fk_prestamo_persona FOREIGN KEY (dniPrestatario) REFERENCES persona(dni),
+ CONSTRAINT fk_prestamo_recurso FOREIGN KEY (idRecurso) REFERENCES recurso(idRecurso)
+);
+
 INSERT INTO prestamo  VALUES (default, '2016-02-08', '2016-02-10', 1, 1);
 INSERT INTO prestamo  VALUES (default, '2016-02-15', '2016-02-18', 1, 1);
 INSERT INTO prestamo  VALUES (default, '2016-02-15', '2016-02-17', 2, 3);
