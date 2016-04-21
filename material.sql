@@ -67,12 +67,13 @@ INSERT INTO reserva  VALUES (default, '2016-02-15', '2016-02-18', 2, 3, 2);
 
 CREATE TABLE prestamo
 (
- idPrestamo			INT AUTO_INCREMENT,
- fechaInicio		DATETIME NOT NULL,
- fechaFin			DATETIME NOT NULL,
  idRecurso			INT NOT NULL,
  dniPrestatario		INT NOT NULL,
- CONSTRAINT pk_prestamo PRIMARY KEY (idPrestamo),
+ fechaInicio		DATETIME NOT NULL,
+ fechaFin			DATETIME NOT NULL,
+ fechaDevolucion 	DATETIME NOT NULL,
+ fechaUltimaNotificacion 	DATETIME,
+ CONSTRAINT pk_prestamo PRIMARY KEY (idRecurso, fechaInicio, dniPrestatario),
  CONSTRAINT fk_prestamo_persona FOREIGN KEY (dniPrestatario) REFERENCES persona(dni),
  CONSTRAINT fk_prestamo_recurso FOREIGN KEY (idRecurso) REFERENCES recurso(idRecurso)
 );
@@ -80,14 +81,3 @@ CREATE TABLE prestamo
 INSERT INTO prestamo  VALUES (default, '2016-02-08', '2016-02-10', 1, 1);
 INSERT INTO prestamo  VALUES (default, '2016-02-15', '2016-02-18', 1, 1);
 INSERT INTO prestamo  VALUES (default, '2016-02-15', '2016-02-17', 2, 3);
-
-
-
-
-
-
-
-
-
-
-
