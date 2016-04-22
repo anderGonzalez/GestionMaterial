@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import dominio.Prestamo;
@@ -176,5 +177,10 @@ public class DAOPrestamos
 	             " WHERE idRecurso = "+ id;
 	    result = stmt.executeUpdate(strSQL);
 		
+	}
+
+	public static ArrayList<Prestamo> buscarPrestamosNoDevueltos() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

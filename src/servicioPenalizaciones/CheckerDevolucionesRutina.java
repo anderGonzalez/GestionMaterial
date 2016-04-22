@@ -21,7 +21,7 @@ public class CheckerDevolucionesRutina {
 			@Override
 			public void run() {
 				
-				CheckerDeoluciones.check();
+				CheckerDeoluciones.checkAll();
 				
 			}
 		}, 0, periodo * MIN_TO_MILIS );
