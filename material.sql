@@ -18,15 +18,16 @@ CREATE TABLE persona
  nombre			VARCHAR(30) NOT NULL,
  password		VARCHAR(64) NOT NULL,
  userName		VARCHAR(35) NOT NULL,
+ email			VARCHAR(45) NOT NULL,
  idTipoUsuario	INT NOT NULL,
  CONSTRAINT pk_persona PRIMARY KEY (dni),
  CONSTRAINT fk_persona_tipousuario FOREIGN KEY (idTipoUsuario) REFERENCES tipousuario(idTipoUsuario)
 );
 
-INSERT INTO persona VALUES (default,'Monse','usansolo','mereno',2);
-INSERT INTO persona VALUES (default,'Txema','gasteiz','txperez',2);
-INSERT INTO persona VALUES (default,'Urtzi','arrasate','umarkiegi',2);
-INSERT INTO persona VALUES (default,'Xabier','arrasate','xelkorobarrutia',1);
+INSERT INTO persona VALUES (default,'Oier','1234','osaizar','oier.saizar@alumni.mondragon.edu',2);
+INSERT INTO persona VALUES (default,'Ander','1234','agonzalez','ander.gonzalez@alumni.mondragon.edu',2);
+INSERT INTO persona VALUES (default,'Joanes','1234','jplazaola','joanes.plazaola@alumni.mondragon.edu',2);
+INSERT INTO persona VALUES (default,'root','root','root','SoyRootNoNecesitoCorreo',1);
 
 
 CREATE TABLE recurso 
@@ -67,26 +68,27 @@ INSERT INTO reserva  VALUES (default, '2016-02-15', '2016-02-18', 2, 3, 2);
 
 CREATE TABLE prestamo
 (
+ idPrestamo		    INT AUTO_INCREMENT,
  idRecurso			INT NOT NULL,
  dniPrestatario		INT NOT NULL,
  fechaInicio		DATETIME NOT NULL,
  fechaFin			DATETIME NOT NULL,
- fechaDevolucion 	DATETIME NOT NULL,
+ fechaDevolucion 	DATETIME,
  fechaUltimaNotificacion 	DATETIME,
- CONSTRAINT pk_prestamo PRIMARY KEY (idRecurso, fechaInicio, dniPrestatario),
+ CONSTRAINT pk_prestamo PRIMARY KEY (idPrestamo),
  CONSTRAINT fk_prestamo_persona FOREIGN KEY (dniPrestatario) REFERENCES persona(dni),
  CONSTRAINT fk_prestamo_recurso FOREIGN KEY (idRecurso) REFERENCES recurso(idRecurso)
 );
 
-CREATE TABLE penalizaciones --bukau gabe do
+CREATE TABLE penalizaciones
 (
  dniPenalizado		INT NOT NULL,
  idPrestamo			INT NOT NULL,
  fechaInicio		DATETIME NOT NULL,
  fechaFin			DATETIME NOT NULL,
- CONSTRAINT pk_penalizaciones PRIMARY KEY (idRecurso, fechaInicio, dniPrestatario),
- CONSTRAINT fk_prestamo_persona FOREIGN KEY (dniPrestatario) REFERENCES persona(dni),
- CONSTRAINT fk_prestamo_recurso FOREIGN KEY (idRecurso) REFERENCES recurso(idRecurso)
+ CONSTRAINT pk_penalizaciones PRIMARY KEY (idPrestamo, fechaInicio, dniPenalizado),
+ CONSTRAINT fk_penalizaciones_persona FOREIGN KEY (dniPenalizado) REFERENCES persona(dni),
+ CONSTRAINT fk_penalizaciones_prestamo FOREIGN KEY (idPrestamo) REFERENCES prestamo(idPrestamo)
 );
 
 INSERT INTO prestamo  VALUES (default, '2016-02-08', '2016-02-10', 1, 1);
