@@ -5,29 +5,29 @@ import java.util.TimerTask;
 
 public class CheckerDevolucionesRutina {
 	static final int MIN_TO_MILIS = 60000;
-	long periodo;	
+	long periodo;
 	Timer rutina;
-	
-	public CheckerDevolucionesRutina(long periodo){
+
+	public CheckerDevolucionesRutina(long periodo) {
 		this.periodo = periodo;
 		startRutina();
 	}
-	
-	public void startRutina(){
-		
+
+	public void startRutina() {
+
 		rutina = new Timer();
 		rutina.schedule(new TimerTask() {
-			
+
 			@Override
 			public void run() {
-				
-				CheckerDeoluciones.checkAll();
-				
+
+				CheckerDevoluciones.checkAll();
+
 			}
-		}, 0, periodo * MIN_TO_MILIS );
+		}, 0, periodo * MIN_TO_MILIS);
 	}
-	
-	public void stopRutina(){
+
+	public void stopRutina() {
 		rutina.cancel();
 	}
 }

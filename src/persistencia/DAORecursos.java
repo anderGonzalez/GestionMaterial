@@ -69,6 +69,26 @@ public class DAORecursos
 	      return;
 	    }
   }
+  
+  public static Recurso buscarRecursoPorID(int IDRecurso){
+	  Recurso recurso = null;
+	  
+	  try {
+		for(Recurso r : getListaRecursos()){
+			  if(r.getId() == IDRecurso){
+				  recurso = r;
+				  break;
+			  }
+		  }
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  
+	return recurso;
+	  
+  }
+  
 	public static void eliminarRecurso(int id) throws SQLException {
 		Statement stmt;
 		int result;
