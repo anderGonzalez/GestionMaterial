@@ -27,13 +27,23 @@ public class CheckerDeoluciones {
 		
 		if(diasDiferencia <= -1){
 			
-			enviarMailDevolucionPendiente(p);
+			devolucionPendienteAccion(p);
 			
 		}else if(diasDiferencia <= 1 && diasDiferencia >= 0){
 			
-			enviarMailDevolucionProxima(p);
+			devolucionProximaAccion(p);
 			
 		}
+		
+	}
+
+	private static void devolucionProximaAccion(Prestamo p) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void devolucionPendienteAccion(Prestamo p) {
+		// TODO Auto-generated method stub
 		
 	}
 
