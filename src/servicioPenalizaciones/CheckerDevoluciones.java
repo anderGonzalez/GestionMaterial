@@ -3,6 +3,8 @@ package servicioPenalizaciones;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import javax.mail.MessagingException;
+
 import dominio.Persona;
 import dominio.Prestamo;
 import dominio.Recurso;
@@ -66,7 +68,12 @@ public class CheckerDevoluciones {
 					+ recurso.getDescripción() + " en la fecha " + p.getFechaInicio()
 					+ " que tenia como fecha limite para su devolucion " + p.getFechaFin().toString() + ". Por"
 					+ " favor realize la devolucion de este recurso lo antes posible para evitar una mayor penalizacion.\n\tGracias";
-			Mailer.Send(prestatario.getEmail(), "Devlolucion Proxima", mensaje);
+			try {
+				Mailer.Send(prestatario.getEmail(), "Devlolucion Proxima", mensaje);
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -86,16 +93,19 @@ public class CheckerDevoluciones {
 					+ recurso.getDescripción() + " en la fecha " + p.getFechaInicio()
 					+ " que tiene como fecha limite para su devolucion " + p.getFechaFin().toString() + ".\n\tGracias";
 
-			//Mailer.Send(prestatario/* .getEmail() */, "Devlolucion Proxima", mensaje);
+			try {
+				Mailer.Send(prestatario.getEmail(), "Devlolucion Proxima", mensaje);
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
 
 	private static boolean checkUltimaNotif(Prestamo p) {
 		int dif = 0;
-		// TODO: descomentar esto
-		// dif =
-		// p.getFechaUltimaNotif().compareTo(Calendar.getInstance())/86400000;
+		dif = p.getFechaUltimaNotifIcacion().compareTo(Calendar.getInstance())/86400000;
 		return dif >= 1;
 	}
 
