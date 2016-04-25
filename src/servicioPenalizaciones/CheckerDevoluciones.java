@@ -66,7 +66,7 @@ public class CheckerDevoluciones {
 					+ recurso.getDescripción() + " en la fecha " + p.getFechaInicio()
 					+ " que tenia como fecha limite para su devolucion " + p.getFechaFin().toString() + ". Por"
 					+ " favor realize la devolucion de este recurso lo antes posible para evitar una mayor penalizacion.\n\tGracias";
-		//	Mailer.Send(prestatario/* .getEmail() */, "Devlolucion Proxima", mensaje);
+			Mailer.Send(prestatario.getEmail(), "Devlolucion Proxima", mensaje);
 		}
 	}
 
