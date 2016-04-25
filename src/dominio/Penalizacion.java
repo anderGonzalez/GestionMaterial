@@ -32,6 +32,14 @@ public class Penalizacion {
 	public Date getfFinal() {
 		return fFinal;
 	}
+	public Integer getIdPrestamo() {
+		return idPrestamo;
+	}
+
+	public void setIdPrestamo(Integer idPrestamo) {
+		this.idPrestamo = idPrestamo;
+	}
+
 	public void setfFinal(Date fFinal) {
 		this.fFinal = fFinal;
 	}	
