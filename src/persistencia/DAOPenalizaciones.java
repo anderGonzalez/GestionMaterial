@@ -1,6 +1,7 @@
 package persistencia;
 
 import java.sql.*;
+import java.sql.Date;
 import java.util.*;
 import dominio.Penalizacion;
 
@@ -18,8 +19,15 @@ public class DAOPenalizaciones {
 			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin, idTipoUsuario FROM penalizaciones";
 			result = stmt.executeQuery(strSQL);
 			while (result.next()) {
-				penalizacion = new Penalizacion(result.getInt("dniPenalizado"), result.getDate("fechaInicio"),
-						result.getDate("fechaFin"), result.getInt("idPrestamo"));
+				
+				Calendar fechaInicio = Calendar.getInstance();
+				Calendar fechaFin = Calendar.getInstance();
+
+				fechaInicio.setTimeInMillis(result.getDate("fechaInicio").getTime());
+				fechaFin.setTimeInMillis(result.getDate("fechaFin").getTime());
+				
+				penalizacion = new Penalizacion(result.getInt("dniPenalizado"), fechaInicio,
+						fechaFin, result.getInt("idPrestamo"));
 				lista.add(penalizacion);
 			}
 			result.close();
@@ -42,8 +50,15 @@ public class DAOPenalizaciones {
 			result = stmt.executeQuery(strSQL);
 			if (!result.next())
 				return null;
-			p = new Penalizacion(result.getInt("dniPenalizado"), result.getDate("fechaInicio"),
-					result.getDate("fechaFin"), result.getInt("idPrestamo"));
+			Calendar fechaInicio = Calendar.getInstance();
+			Calendar fechaFin = Calendar.getInstance();
+
+			fechaInicio.setTimeInMillis(result.getDate("fechaInicio").getTime());
+			fechaFin.setTimeInMillis(result.getDate("fechaFin").getTime());
+			
+			
+			p = new Penalizacion(result.getInt("dniPenalizado"), fechaInicio,
+					fechaFin, result.getInt("idPrestamo"));
 			result.close();
 			return p;
 		}
@@ -68,8 +83,15 @@ public class DAOPenalizaciones {
 					+ " FROM Penalizaciones WHERE dniPenalizado=" + dni;
 			result = stmt.executeQuery(strSQL);
 			while (result.next()) {
-				penalizacion = new Penalizacion(result.getInt("dniPenalizado"), result.getDate("fechaInicio"),
-						result.getDate("fechaFin"), result.getInt("idPrestamo"));
+				
+				Calendar fechaInicio = Calendar.getInstance();
+				Calendar fechaFin = Calendar.getInstance();
+
+				fechaInicio.setTimeInMillis(result.getDate("fechaInicio").getTime());
+				fechaFin.setTimeInMillis(result.getDate("fechaFin").getTime());
+				
+				penalizacion = new Penalizacion(result.getInt("dniPenalizado"), fechaInicio,
+						fechaFin, result.getInt("idPrestamo"));
 				lista.add(penalizacion);
 			}
 			result.close();
@@ -87,9 +109,13 @@ public class DAOPenalizaciones {
 		String strSQL;
 
 		try {
+			Date fInicio, fFin;
+			fInicio = new Date(p.getfInicio().getTimeInMillis());
+			fFin = new Date(p.getfFinal().getTimeInMillis());
+			
 			stmt = PoolConexiones.getConexion().createStatement();
 			strSQL = "INSERT INTO Penalizaciones (dniPenalizado, idPrestamo,fechaInicio,fechaFin)" + " VALUES ('"
-					+ p.getDni() + "','" + p.getIdPrestamo() + "','" + p.getfInicio() + "'," + p.getfFinal()+ ")";
+					+ p.getDni() + "','" + p.getIdPrestamo() + "','" + fInicio + "'," + fFin + ")";
 			stmt.executeUpdate(strSQL);
 			return true;
 		}
