@@ -5,12 +5,14 @@ public class Prestamo
 {
   protected Calendar fechaInicio;
   protected Calendar fechaFin;
+  protected Calendar fechaUltimaNotificicacion;
+  protected Calendar fechaDevolucion;
   protected int id;
   protected int dniPrestatario;
   protected int idRecurso;
   
   
-  public Prestamo(Calendar fechaInicio,Calendar fechaFin,
+  public Prestamo(Calendar fechaInicio,Calendar fechaFin,Calendar fechaDevolucion,Calendar fechaUltimaNotificicacion,
                   int id, int dniPrestatario, int idRecurso)
   {
     this.fechaInicio=fechaInicio;
@@ -18,6 +20,8 @@ public class Prestamo
     this.id=id;
     this.dniPrestatario=dniPrestatario;
     this.idRecurso=idRecurso;
+    this.fechaUltimaNotificicacion = fechaUltimaNotificicacion;
+    this.fechaDevolucion = fechaDevolucion;
   }
   
   public Prestamo(Calendar fechaInicio,Calendar fechaFin,
@@ -31,6 +35,8 @@ public class Prestamo
   
   public Calendar getFechaInicio(){return fechaInicio;}
   public Calendar getFechaFin(){return fechaFin;}
+  public Calendar getFechaUltimaNotificicacion(){return fechaUltimaNotificicacion; }
+  public Calendar getFechaDevolucion(){return fechaDevolucion; }
   public int getId(){return id;}
   public int getIdPrestatario(){return dniPrestatario;}
   public int getIdRecurso(){return idRecurso;}

@@ -78,21 +78,25 @@ public class DAOPrestamos
     ResultSet result;
     String strSQL;
     Prestamo p;
-    Calendar calIni,calFin;
+    Calendar calIni,calFin,calUlt,calDev;
     
     try
     {
       stmt=PoolConexiones.getConexion().createStatement();
-      strSQL="SELECT fechaInicio,fechaFin,idRecurso,dniPrestatario,idPrestamo"+
+      strSQL="SELECT fechaInicio,fechaFin,fechaDevolucion,fechaUltimaNotificacion,idRecurso,dniPrestatario,idPrestamo"+
              " FROM Prestamo"+
              " WHERE idPrestamo="+idPrestamo;
       result = stmt.executeQuery(strSQL);
       if(!result.next()) return null;
       calIni=Calendar.getInstance();
       calFin=Calendar.getInstance();
+      calUlt=Calendar.getInstance();
+      calDev=Calendar.getInstance();
       calIni.setTime(result.getDate("fechaInicio",calIni));
       calFin.setTime(result.getTimestamp("fechaFin",calFin));
-      p=new Prestamo(calIni,calFin,
+      calUlt.setTime(result.getTimestamp("fechaUltimaNotificacion",calUlt));
+      calDev.setTime(result.getTimestamp("fechaDevolucion",calDev));
+      p=new Prestamo(calIni,calFin,calDev,calUlt,
                      result.getInt("idPrestamo"),
                      result.getInt("dniPrestatario"),
                      result.getInt("idRecurso"));
@@ -113,21 +117,25 @@ public class DAOPrestamos
     ResultSet result;
     String strSQL;
     Prestamo p;
-    Calendar calIni,calFin;
+    Calendar calIni,calFin,calUlt,calDev;
     
     try
     {
       stmt=PoolConexiones.getConexion().createStatement();
-      strSQL="SELECT fechaInicio,fechaFin,idRecurso,dniPrestatario,idPrestamo"+
+      strSQL="SELECT fechaInicio,fechaFin,fechaUltimaNotificacion,fechaDevolucion ,idRecurso,dniPrestatario,idPrestamo"+
              " FROM Prestamo"+
              " WHERE idRecurso="+idRecurso+';';
       result = stmt.executeQuery(strSQL);
       if(!result.next()) return null;
       calIni=Calendar.getInstance();
       calFin=Calendar.getInstance();
+      calUlt=Calendar.getInstance();
+      calDev=Calendar.getInstance();
       calIni.setTime(result.getDate("fechaInicio",calIni));
       calFin.setTime(result.getTimestamp("fechaFin",calFin));
-      p=new Prestamo(calIni,calFin,
+      calUlt.setTime(result.getTimestamp("fechaUltimaNotificacion",calUlt));
+      calDev.setTime(result.getTimestamp("fechaDevolucion",calDev));
+      p=new Prestamo(calIni,calFin,calDev,calUlt,
                      result.getInt("idPrestamo"),
                      result.getInt("dniPrestatario"),
                      result.getInt("idRecurso"));
@@ -178,6 +186,30 @@ public class DAOPrestamos
 	    result = stmt.executeUpdate(strSQL);
 		
 	}
+	
+	public static boolean estaDevuelto(int id){
+		Statement stmt;
+	    ResultSet result;
+	    String strSQL;
+	    boolean resultado = false;
+	    try
+	    {
+	      stmt=PoolConexiones.getConexion().createStatement();
+	      strSQL="SELECT fechaDevolucion" +
+	             " FROM Prestamo"+
+	             " WHERE idPrestamo="+id;
+	      result = stmt.executeQuery(strSQL);
+	      if(!result.next()) throw new Exception("sentencia errónea: " + strSQL);
+	      resultado = (!result.getString("fechaDevolucion").equals("NULL")); //probatu beharra
+	     
+	    } catch (Exception e){
+	    	System.out.println(e.getMessage());
+	    	e.printStackTrace();
+	    }
+	      return resultado;
+	}
+	
+	
 
 	public static ArrayList<Prestamo> buscarPrestamosNoDevueltos() {
 		// TODO Auto-generated method stub

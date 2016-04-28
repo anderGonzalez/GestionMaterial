@@ -105,7 +105,7 @@ public class CheckerDevoluciones {
 
 	private static boolean checkUltimaNotif(Prestamo p) {
 		int dif = 0;
-		dif = p.getFechaUltimaNotifIcacion().compareTo(Calendar.getInstance())/86400000;
+		dif = p.getFechaUltimaNotificicacion().compareTo(Calendar.getInstance())/86400000;
 		return dif >= 1;
 	}
 

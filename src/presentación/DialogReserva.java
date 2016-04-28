@@ -251,7 +251,7 @@ public class DialogReserva extends JDialog implements ListSelectionListener {
 		}
 
 		private void tratarOpciónEditar() {
-			int index = vTabla.getSelectedRow() ;
+			int index = vTabla.getSelectedRow();
 			Reserva reserva = tabla.getReservaAt(index);
 			DialogoDatosReserva dialogo = new DialogoDatosReserva (DialogReserva.this,"Modificar Reserva", Sesion.getInstance().getUsuario(),
 												recurso, tabla.getReservaAt(index), true);
