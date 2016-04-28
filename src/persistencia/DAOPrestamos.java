@@ -208,9 +208,50 @@ public class DAOPrestamos
 	             " WHERE idRecurso = "+ id;
 	    result = stmt.executeUpdate(strSQL);
 		
-	}	
+	}
 	
-
+	public static boolean actualizarFechasPrestamo(Prestamo p){
+		Statement stmt;
+		String strSQL;
+		String strFechaDev = "null";
+	    String strFechaUltNot = "null";
+	    Calendar calendario;
+	    int dia,mes,año,hora,min;
+	    
+	    calendario=p.getFechaDevolucion();
+	      if(calendario != null){
+	    	  dia=calendario.get(Calendar.DAY_OF_MONTH);
+	          mes=calendario.get(Calendar.MONTH)+1;
+	          año=calendario.get(Calendar.YEAR);
+	          hora=calendario.get(Calendar.HOUR_OF_DAY);
+	          min=calendario.get(Calendar.MINUTE);
+	          strFechaDev=año+"-"+mes+'-'+dia+' '+hora+':'+min;
+	      }
+	      
+	      calendario=p.getFechaUltimaNotificicacion();
+	      if(calendario != null){
+	    	  dia=calendario.get(Calendar.DAY_OF_MONTH);
+	          mes=calendario.get(Calendar.MONTH)+1;
+	          año=calendario.get(Calendar.YEAR);
+	          hora=calendario.get(Calendar.HOUR_OF_DAY);
+	          min=calendario.get(Calendar.MINUTE);
+	          strFechaUltNot=año+"-"+mes+'-'+dia+' '+hora+':'+min;
+	      }
+	    
+		try {
+			stmt=PoolConexiones.getConexion().createStatement();
+			strSQL="UPDATE PRESTAMO"+
+					" SET fechaUltimaNotificacion = "+"'"+strFechaUltNot+"',"+
+					" fechaDevolucion = "+"'"+strFechaDev+"'"+
+		             " WHERE idPrestamo = "+ p.getId();
+		    stmt.executeUpdate(strSQL);
+		    return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public static ArrayList<Prestamo> buscarPrestamosNoDevueltos() {
 		Statement stmt;
 	    ResultSet result;
