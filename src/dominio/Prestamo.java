@@ -40,4 +40,12 @@ public class Prestamo
   public int getId(){return id;}
   public int getIdPrestatario(){return dniPrestatario;}
   public int getIdRecurso(){return idRecurso;}
+  
+  public void setFechaDevolucion(Calendar fechaDevolucion){
+	  this.fechaDevolucion = fechaDevolucion;
+  }
+  
+  public void setFechaUltimaNotificicacion(Calendar fechaUltimaNotificicacion){
+	  this.fechaUltimaNotificicacion = fechaUltimaNotificicacion;
+  }
 }
