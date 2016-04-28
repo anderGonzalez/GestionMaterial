@@ -4,23 +4,23 @@ import java.sql.Date;
 
 public class Penalizacion {
 	
-	protected String dni;
+	protected Integer dni;
 	protected Date fInicio;
 	protected Date fFinal;
 	protected Integer idPrestamo;
 	
 	
-	 public Penalizacion(String dni, Date fInicio, Date fFinal, Integer idPrestamo){
+	 public Penalizacion(Integer dni, Date fInicio, Date fFinal, Integer idPrestamo){
 	 this.dni = dni;
 	 this.fInicio = fInicio;
 	 this.fFinal = fFinal;
 	 this.idPrestamo = idPrestamo; 
 	 }
 	
-	public String getDni() {
+	public Integer getDni() {
 		return dni;
 	}
-	public void setDni(String dni) {
+	public void setDni(Integer dni) {
 		this.dni = dni;
 	}
 	public Date getfInicio() {
