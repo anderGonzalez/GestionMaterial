@@ -2,11 +2,7 @@ package persistencia;
 
 import java.sql.*;
 import java.util.*;
-import java.io.*;
-
 import dominio.Penalizacion;
-import dominio.Persona;
-import dominio.Recurso;
 
 public class DAOPenalizaciones {
 	static public ArrayList<Penalizacion> obtenerPenalizaciones() throws Exception {
@@ -22,7 +18,7 @@ public class DAOPenalizaciones {
 			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin, idTipoUsuario FROM penalizaciones";
 			result = stmt.executeQuery(strSQL);
 			while (result.next()) {
-				penalizacion = new Penalizacion(result.getString("dniPenalizado"), result.getDate("fechaInicio"),
+				penalizacion = new Penalizacion(result.getInt("dniPenalizado"), result.getDate("fechaInicio"),
 						result.getDate("fechaFin"), result.getInt("idPrestamo"));
 				lista.add(penalizacion);
 			}
@@ -46,7 +42,7 @@ public class DAOPenalizaciones {
 			result = stmt.executeQuery(strSQL);
 			if (!result.next())
 				return null;
-			p = new Penalizacion(result.getString("dniPenalizado"), result.getDate("fechaInicio"),
+			p = new Penalizacion(result.getInt("dniPenalizado"), result.getDate("fechaInicio"),
 					result.getDate("fechaFin"), result.getInt("idPrestamo"));
 			result.close();
 			return p;
@@ -58,6 +54,7 @@ public class DAOPenalizaciones {
 		}
 	}
 
+	@SuppressWarnings("null")
 	static public ArrayList<Penalizacion> buscarPorDni(String dni) throws Exception {
 		Statement stmt;
 		ResultSet result;
@@ -71,7 +68,7 @@ public class DAOPenalizaciones {
 					+ " FROM Penalizaciones WHERE dniPenalizado=" + dni;
 			result = stmt.executeQuery(strSQL);
 			while (result.next()) {
-				penalizacion = new Penalizacion(result.getString("dniPenalizado"), result.getDate("fechaInicio"),
+				penalizacion = new Penalizacion(result.getInt("dniPenalizado"), result.getDate("fechaInicio"),
 						result.getDate("fechaFin"), result.getInt("idPrestamo"));
 				lista.add(penalizacion);
 			}
@@ -87,7 +84,6 @@ public class DAOPenalizaciones {
 
 	static public boolean addPenalizacion(Penalizacion p) throws Exception {
 		Statement stmt;
-		boolean ok = false;
 		String strSQL;
 
 		try {
@@ -104,20 +100,4 @@ public class DAOPenalizaciones {
 		}
 	}
 
-	static public boolean store(Penalizacion p) throws Exception {
-		Statement stmt;
-		boolean ok = false;
-		String strSQL;
-
-		try {
-			stmt = PoolConexiones.getConexion().createStatement();
-			strSQL = "UPDATE Persona " + " SET dniPenalizado = '" + p.getDni() + "', idPrestamo   = '" + p.getIdPrestamo()
-					+ "', fechaInicio = '" + p.getfInicio() + "', fechaFin = '" + p.getfFinal();
-			return (stmt.executeUpdate(strSQL) > 0);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			;
-			return false;
-		}
-	}
 }
