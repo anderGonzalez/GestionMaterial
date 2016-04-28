@@ -1,16 +1,16 @@
 package dominio;
 
-import java.sql.Date;
+import java.util.Calendar;
 
 public class Penalizacion {
 	
 	protected Integer dni;
-	protected Date fInicio;
-	protected Date fFinal;
+	protected Calendar fInicio;
+	protected Calendar fFinal;
 	protected Integer idPrestamo;
 	
 	
-	 public Penalizacion(Integer dni, Date fInicio, Date fFinal, Integer idPrestamo){
+	 public Penalizacion(Integer dni, Calendar fInicio, Calendar fFinal, Integer idPrestamo){
 	 this.dni = dni;
 	 this.fInicio = fInicio;
 	 this.fFinal = fFinal;
@@ -23,13 +23,13 @@ public class Penalizacion {
 	public void setDni(Integer dni) {
 		this.dni = dni;
 	}
-	public Date getfInicio() {
+	public Calendar getfInicio() {
 		return fInicio;
 	}
-	public void setfInicio(Date fInicio) {
+	public void setfInicio(Calendar fInicio) {
 		this.fInicio = fInicio;
 	}
-	public Date getfFinal() {
+	public Calendar getfFinal() {
 		return fFinal;
 	}
 	public Integer getIdPrestamo() {
@@ -40,7 +40,7 @@ public class Penalizacion {
 		this.idPrestamo = idPrestamo;
 	}
 
-	public void setfFinal(Date fFinal) {
+	public void setfFinal(Calendar fFinal) {
 		this.fFinal = fFinal;
 	}	
 
