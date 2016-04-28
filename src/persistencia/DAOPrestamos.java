@@ -37,6 +37,8 @@ public class DAOPrestamos
     Statement stmt;
     boolean ok=false;
     String strSQL,strFechaInicio,strFechaFin;
+    String strFechaDev = "null";
+    String strFechaUltNot = "null";
     Calendar calendario;
     int dia,mes,año,hora,min;
     
@@ -56,9 +58,29 @@ public class DAOPrestamos
       hora=calendario.get(Calendar.HOUR_OF_DAY);
       min=calendario.get(Calendar.MINUTE);
       strFechaFin=año+"-"+mes+'-'+dia+' '+hora+':'+min;
+      calendario=p.getFechaDevolucion();
+      if(calendario != null){
+    	  dia=calendario.get(Calendar.DAY_OF_MONTH);
+          mes=calendario.get(Calendar.MONTH)+1;
+          año=calendario.get(Calendar.YEAR);
+          hora=calendario.get(Calendar.HOUR_OF_DAY);
+          min=calendario.get(Calendar.MINUTE);
+          strFechaDev=año+"-"+mes+'-'+dia+' '+hora+':'+min;
+      }
+      
+      calendario=p.getFechaUltimaNotificicacion();
+      if(calendario != null){
+    	  dia=calendario.get(Calendar.DAY_OF_MONTH);
+          mes=calendario.get(Calendar.MONTH)+1;
+          año=calendario.get(Calendar.YEAR);
+          hora=calendario.get(Calendar.HOUR_OF_DAY);
+          min=calendario.get(Calendar.MINUTE);
+          strFechaUltNot=año+"-"+mes+'-'+dia+' '+hora+':'+min;
+      }
+      
       stmt=PoolConexiones.getConexion().createStatement();
-      strSQL="INSERT INTO Prestamo(fechaInicio,fechaFin,idRecurso,dniPrestatario) "+
-        "VALUES ('"+strFechaInicio+"','"+strFechaFin+"',"+
+      strSQL="INSERT INTO Prestamo(fechaInicio,fechaFin,fechaDevolucion,fechaUltimaNotificacion,idRecurso,dniPrestatario) "+
+        "VALUES ('"+strFechaInicio+"','"+strFechaFin+"','"+strFechaDev+"','"+strFechaUltNot+"',"+
                   p.getIdRecurso()+"," +p.getIdPrestatario()+")";
       stmt.executeUpdate(strSQL);
       return true;
@@ -150,6 +172,7 @@ public class DAOPrestamos
     }
   }
 
+  //
 	public static boolean estaPrestado(int id, LocalDateTime ahora) {
 		Statement stmt;
 	    ResultSet result;
@@ -163,8 +186,8 @@ public class DAOPrestamos
 	      strDateTime = ahora.format(formatter);
 	      strSQL="SELECT count(*)" +
 	             " FROM Prestamo"+
-	             " WHERE idRecurso="+id+" and '"+
-	             strDateTime +"' BETWEEN fechaInicio AND fechaFin";
+	             " WHERE (idRecurso="+id+") and ('"+
+	             strDateTime +"' BETWEEN fechaInicio AND fechaFin) and (fechaDevolucion is not null)";
 	      result = stmt.executeQuery(strSQL);
 	      if(!result.next()) throw new Exception("sentencia errónea: " + strSQL);
 	      resultado= (result.getInt(1) != 0);
@@ -185,30 +208,7 @@ public class DAOPrestamos
 	             " WHERE idRecurso = "+ id;
 	    result = stmt.executeUpdate(strSQL);
 		
-	}
-	
-	public static boolean estaDevuelto(int id){
-		Statement stmt;
-	    ResultSet result;
-	    String strSQL;
-	    boolean resultado = false;
-	    try
-	    {
-	      stmt=PoolConexiones.getConexion().createStatement();
-	      strSQL="SELECT fechaDevolucion" +
-	             " FROM Prestamo"+
-	             " WHERE idPrestamo="+id;
-	      result = stmt.executeQuery(strSQL);
-	      if(!result.next()) throw new Exception("sentencia errónea: " + strSQL);
-	      resultado = (!result.getString("fechaDevolucion").equals("NULL")); //probatu beharra
-	     
-	    } catch (Exception e){
-	    	System.out.println(e.getMessage());
-	    	e.printStackTrace();
-	    }
-	      return resultado;
-	}
-	
+	}	
 	
 
 	public static ArrayList<Prestamo> buscarPrestamosNoDevueltos() {
