@@ -104,16 +104,15 @@ public class DAOPenalizaciones {
 		}
 	}
 
-	static public boolean store(Persona p) throws Exception {
+	static public boolean store(Penalizacion p) throws Exception {
 		Statement stmt;
 		boolean ok = false;
 		String strSQL;
 
 		try {
 			stmt = PoolConexiones.getConexion().createStatement();
-			strSQL = "UPDATE Persona " + " SET userName = '" + p.getUserName() + "', nombre   = '" + p.getNombre()
-					+ "', password = '" + p.getPassword() + "', idTipoUsuario = '" + p.getIdTipoUsuario()
-					+ "' WHERE dni=" + p.getId();
+			strSQL = "UPDATE Persona " + " SET dniPenalizado = '" + p.getDni() + "', idPrestamo   = '" + p.getIdPrestamo()
+					+ "', fechaInicio = '" + p.getfInicio() + "', fechaFin = '" + p.getfFinal();
 			return (stmt.executeUpdate(strSQL) > 0);
 		} catch (SQLException e) {
 			e.printStackTrace();
