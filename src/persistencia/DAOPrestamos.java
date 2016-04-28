@@ -212,7 +212,25 @@ public class DAOPrestamos
 	
 
 	public static ArrayList<Prestamo> buscarPrestamosNoDevueltos() {
-		// TODO Auto-generated method stub
-		return null;
+		Statement stmt;
+	    ResultSet result;
+	    String strSQL;
+	    ArrayList<Prestamo> resultado = new ArrayList<>();
+	    try
+	    {
+	      stmt=PoolConexiones.getConexion().createStatement();
+	      strSQL="SELECT idPrestamo" +
+	             " FROM Prestamo"+
+	             " WHERE fechaDevolucion is null";
+	      result = stmt.executeQuery(strSQL);
+	      if(!result.next()) throw new Exception("sentencia errónea: " + strSQL);
+	      do{
+	    	 resultado.add(buscarPorId(result.getInt("idPrestamo")));
+	      }while(result.next());
+	    } catch (Exception e){
+	    	System.out.println(e.getMessage());
+	    	e.printStackTrace();
+	    }
+	      return resultado;
 	}
 }
