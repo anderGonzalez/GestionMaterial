@@ -8,12 +8,13 @@ public class Persona {
 	protected int idTipoUsuario;
 	protected String email;
 
-	public Persona(String userName, String nombre, String password, int id, int tipo) {
+	public Persona(String userName, String nombre, String password, String email, int id, int tipo) {
 		this.userName = userName;
 		this.nombre = nombre;
 		this.password = password;
 		this.id = id;
 		this.idTipoUsuario = tipo;
+		this.email = email;
 	}
 
 	public String getUserName() {

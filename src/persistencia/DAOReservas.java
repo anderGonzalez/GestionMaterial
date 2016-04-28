@@ -23,7 +23,7 @@ public class DAOReservas {
 	    try
 	    {
 	      stmt=PoolConexiones.getConexion().createStatement();
-	      strSQL="SELECT P.DNI,P.NOMBRE,P.PASSWORD,P.USERNAME,P.IDTIPOUSUARIO," +
+	      strSQL="SELECT P.DNI,P.NOMBRE,P.PASSWORD,P.USERNAME, P.EMAIL,P.IDTIPOUSUARIO," +
 	                     "R.IDRESERVA,R.FECHAINICIO,R.FECHAFIN,URGENCIA"+
 	             " FROM Reserva AS R, PERSONA AS P"+
 	             " WHERE R.dniPeticionario = P.dni AND"+
@@ -33,8 +33,8 @@ public class DAOReservas {
 	      
 	      while(result.next()){
 	    	 persona = new Persona(result.getString("username"),result.getString("nombre"),
-	    			              result.getString("password"),result.getInt("dni"), 
-	    			              result.getInt("IdTipoUsuario"));
+	    			              result.getString("password"),result.getString("email"),
+	    			              result.getInt("dni"),result.getInt("IdTipoUsuario"));
 	    	 reserva = new Reserva(result.getInt("idReserva"),persona,recurso,result.getTimestamp("fechaInicio").toLocalDateTime(),
 	    			 		result.getTimestamp("fechafin").toLocalDateTime(),
 	    			 		result.getInt("urgencia"));
@@ -155,7 +155,7 @@ public class DAOReservas {
 	      DateTimeFormatter formatter =   DateTimeFormatter.ofPattern("yyyy-MM-dd  HH:mm");
 	      String strFechaDesde = desde.format(formatter);
 	      String strFechaHasta = hasta.format(formatter);
-	      strSQL="SELECT P.DNI,P.NOMBRE,P.PASSWORD,P.USERNAME,P.IDTIPOUSUARIO," +
+	      strSQL="SELECT P.DNI,P.NOMBRE,P.PASSWORD,P.USERNAME,P.IDTIPOUSUARIO, P.EMAIL," +
 	                     "R.IDRESERVA,R.FECHAINICIO,R.FECHAFIN,URGENCIA"+
 	             " FROM Reserva AS R, PERSONA AS P"+
 	             " WHERE R.dniPeticionario = P.dni AND"+
@@ -169,8 +169,8 @@ public class DAOReservas {
 	      
 	      while(result.next()){
 	    	 persona = new Persona(result.getString("username"),result.getString("nombre"),
-	    			              result.getString("password"),result.getInt("dni"), 
-	    			              result.getInt("IdTipoUsuario"));
+	    			              result.getString("password"),result.getString("email"),
+	    			              result.getInt("dni"), result.getInt("IdTipoUsuario"));
 	    	 reserva = new Reserva(result.getInt("idReserva"),persona,recurso,result.getTimestamp("fechaInicio").toLocalDateTime(),
 	    			 		result.getTimestamp("fechafin").toLocalDateTime(),
 	    			 		result.getInt("urgencia"));
