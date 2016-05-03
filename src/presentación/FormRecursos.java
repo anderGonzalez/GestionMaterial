@@ -42,7 +42,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 	JMenu	menuRecursos,  menuSalir;
 	JMenuItem opcionMenu;
 	
-	AbstractAction accAdd,accDelete,accEdit,accReservar,accTake;
+	AbstractAction accAdd,accDelete,accEdit,accReservar,accTake,accReturn;
 	ModeloTablaRecursos tabla;
 	 
 	JTable vTabla;
@@ -112,6 +112,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 		accEdit = new MiAccion ("Editar",new ImageIcon("iconos/edit.png"),"Editar",KeyEvent.VK_E);
 		accReservar = new MiAccion ("Reservar",new ImageIcon("iconos/month.png"),"Reservar",KeyEvent.VK_R);
 		accTake = new MiAccion ("Llevar",new ImageIcon("iconos/agt_login.png"),"Llevar",KeyEvent.VK_P);
+		accReturn = new MiAccion ("Devolver",new ImageIcon("iconos/return.png"),"Devolver",KeyEvent.VK_B);
 	}
 
 	private JToolBar crearToolBar() {
@@ -126,6 +127,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 		
 		toolBar.add(accReservar);
 		toolBar.add(accTake);
+		toolBar.add(accReturn);
 		
 		
 		
@@ -184,6 +186,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 		
 		opcionMenu = menuRecursos.add(accReservar);
 		opcionMenu = menuRecursos.add(accTake);
+		opcionMenu = menuRecursos.add(accReturn);
 	
 		
 		return menuRecursos;
@@ -210,7 +213,8 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 			case "Borrar": tratarOpciónBorrar(); break;
 			case "Editar": tratarOpciónEditar();break;
 			case "Reservar": tratarOpciónReservar();break;
-			case "Llevar": System.out.println("Ha elegido Llevar");break;
+			case "Llevar": tratarOpciónLlevar();break;
+			case "Devolver": tratarOpciónDevolver(); break;
 			}
 	
 		}
@@ -269,6 +273,14 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 					e1.printStackTrace();
 				}
 			   }
+		}
+		
+		private void tratarOpciónLlevar() {
+			System.out.println("Ha elegido llevar");
+		}
+		
+		private void tratarOpciónDevolver() {
+			System.out.println("Ha elegido devolver");
 		}
 	}
 
