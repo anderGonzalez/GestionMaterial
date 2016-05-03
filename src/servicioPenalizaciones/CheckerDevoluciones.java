@@ -5,15 +5,33 @@ import java.util.Calendar;
 
 import javax.mail.MessagingException;
 
+import dominio.Penalizacion;
 import dominio.Persona;
 import dominio.Prestamo;
 import dominio.Recurso;
-import dominio.Reserva;
+import persistencia.DAOPenalizaciones;
 import persistencia.DAOPersonas;
 import persistencia.DAOPrestamos;
 import persistencia.DAORecursos;
 
 public class CheckerDevoluciones {
+	
+	public static void checkDevolucionRealizada(Prestamo p){
+		long diferencia = p.getFechaDevolucion().getTimeInMillis() - p.getFechaFin().getTimeInMillis();
+		if(diferencia/86400000 > 0){
+			Calendar c = Calendar.getInstance();
+			c.add(Calendar.MILLISECOND, (int) diferencia);
+			Penalizacion penalizacion = new Penalizacion(	p.getIdPrestatario(), 
+															Calendar.getInstance(), 
+															c,
+															p.getId());
+			try {
+				DAOPenalizaciones.addPenalizacion(penalizacion);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public static void checkAll() {
 
@@ -25,12 +43,28 @@ public class CheckerDevoluciones {
 		}
 
 	}
+	
+	public static boolean isPenalizado(Persona p){
+		ArrayList<Penalizacion> penaliz = new ArrayList<>();
+		Calendar c = Calendar.getInstance();
+		try {
+			penaliz = DAOPenalizaciones.buscarPorDni("" + p.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for (Penalizacion pen : penaliz){
+			if(c.before(pen.getfFinal()) && c.after(pen.getfInicio())) return true; 
+		}
+		return false;
+		
+		
+	}
 
 	private static void check(Prestamo p) {
 		Calendar fechaFin = p.getFechaFin();
 		int diasDiferencia;
-		diasDiferencia = fechaFin.compareTo(Calendar.getInstance()) / 86400000;
-
+		diasDiferencia = (int) ((fechaFin.getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) / 86400000); //ms a dias
+		
 		if (diasDiferencia <= -1) {
 
 			devolucionPendienteAccion(p);
@@ -50,8 +84,26 @@ public class CheckerDevoluciones {
 	}
 
 	private static void devolucionPendienteAccion(Prestamo p) {
-		// TODO Auto-generated method stub
+		enviarMailDevolucionPendiente(p);
+		crearPenalizacionDiaria(p);
+		
+		
 
+	}
+
+	private static void crearPenalizacionDiaria(Prestamo p) {		
+		
+		Penalizacion penaliz = new Penalizacion(p.getIdPrestatario(), 
+												Calendar.getInstance(), 
+												Calendar.getInstance(),
+												p.getId());
+		
+		try {
+			DAOPenalizaciones.addPenalizacion(penaliz);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 
 	private static void enviarMailDevolucionPendiente(Prestamo p) {
@@ -70,8 +122,11 @@ public class CheckerDevoluciones {
 					+ " favor realize la devolucion de este recurso lo antes posible para evitar una mayor penalizacion.\n\tGracias";
 			try {
 				Mailer.Send(prestatario.getEmail(), "Devlolucion Proxima", mensaje);
+				
+				p.setFechaUltimaNotificicacion(Calendar.getInstance());
+				DAOPrestamos.actualizarFechasPrestamo(p);
+				
 			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -84,7 +139,6 @@ public class CheckerDevoluciones {
 			try {
 				prestatario = DAOPersonas.buscarPorId(p.getIdPrestatario());
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			Recurso recurso = DAORecursos.buscarRecursoPorID(p.getIdRecurso());
@@ -95,8 +149,11 @@ public class CheckerDevoluciones {
 
 			try {
 				Mailer.Send(prestatario.getEmail(), "Devlolucion Proxima", mensaje);
+				
+				p.setFechaUltimaNotificicacion(Calendar.getInstance());
+				DAOPrestamos.actualizarFechasPrestamo(p);
+				
 			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
