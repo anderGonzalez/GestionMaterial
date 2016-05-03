@@ -115,13 +115,12 @@ public class DAOPenalizaciones {
 			
 			stmt = PoolConexiones.getConexion().createStatement();
 			strSQL = "INSERT INTO Penalizaciones (dniPenalizado, idPrestamo,fechaInicio,fechaFin)" + " VALUES ('"
-					+ p.getDni() + "','" + p.getIdPrestamo() + "','" + fInicio + "'," + fFin + ")";
+					+ p.getDni() + "','" + p.getIdPrestamo() + "','" + fInicio + "','" + fFin + "')";
 			stmt.executeUpdate(strSQL);
 			return true;
 		}
 
 		catch (SQLException e) {
-			e.printStackTrace();
 			return false;
 		}
 	}

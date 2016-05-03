@@ -1,5 +1,6 @@
 package servicioPenalizaciones;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -61,18 +62,20 @@ public class CheckerDevoluciones {
 	}
 
 	private static void check(Prestamo p) {
-		Calendar fechaFin = p.getFechaFin();
-		int diasDiferencia;
-		diasDiferencia = (int) ((fechaFin.getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) / 86400000); //ms a dias
-		
-		if (diasDiferencia <= -1) {
-
-			devolucionPendienteAccion(p);
-
-		} else if (diasDiferencia <= 1 && diasDiferencia >= 0) {
-
-			devolucionProximaAccion(p);
-
+		if (checkUltimaNotif(p)) {
+			Calendar fechaFin = p.getFechaFin();
+			int diasDiferencia;
+			diasDiferencia = (int) ((fechaFin.getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) / 86400000); //ms a dias
+			
+			if (diasDiferencia <= -1) {
+	
+				devolucionPendienteAccion(p);
+	
+			} else if (diasDiferencia <= 1 && diasDiferencia >= 0) {
+	
+				devolucionProximaAccion(p);
+	
+			}
 		}
 
 	}
@@ -107,7 +110,6 @@ public class CheckerDevoluciones {
 	}
 
 	private static void enviarMailDevolucionPendiente(Prestamo p) {
-		if (checkUltimaNotif(p)) {
 			Persona prestatario = null;
 			try {
 				prestatario = DAOPersonas.buscarPorId(p.getIdPrestatario());
@@ -115,21 +117,23 @@ public class CheckerDevoluciones {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+			
 			Recurso recurso = DAORecursos.buscarRecursoPorID(p.getIdRecurso());
-			String mensaje = "Usted, " + prestatario.getNombre() + ", ha realizado un prestamo de "
-					+ recurso.getDescripción() + " en la fecha " + p.getFechaInicio()
-					+ " que tenia como fecha limite para su devolucion " + p.getFechaFin().toString() + ". Por"
-					+ " favor realize la devolucion de este recurso lo antes posible para evitar una mayor penalizacion.\n\tGracias";
+			String mensaje = "Saludos,\n\nUsted, " + prestatario.getNombre() + ", ha realizado un prestamo de "
+					+  recurso.getNombre() + ", " +recurso.getDescripción() + " en la fecha " + f.format(p.getFechaInicio().getTime())
+					+ " que tenia como fecha limite para su devolucion " + f.format(p.getFechaFin().getTime()) + ". Por"
+					+ " favor realize la devolucion de este recurso lo antes posible para evitar una mayor penalizacion.\n\nGracias";
 			try {
 				Mailer.Send(prestatario.getEmail(), "Devlolucion Proxima", mensaje);
-				
+				System.out.println("Se ha enviado un mail");
 				p.setFechaUltimaNotificicacion(Calendar.getInstance());
 				DAOPrestamos.actualizarFechasPrestamo(p);
 				
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}
-		}
+		
 	}
 
 	private static void enviarMailDevolucionProxima(Prestamo p) {
@@ -142,10 +146,10 @@ public class CheckerDevoluciones {
 				e.printStackTrace();
 			}
 			Recurso recurso = DAORecursos.buscarRecursoPorID(p.getIdRecurso());
-
-			String mensaje = "Usted, " + prestatario.getNombre() + ", ha realizado un prestamo de "
-					+ recurso.getDescripción() + " en la fecha " + p.getFechaInicio()
-					+ " que tiene como fecha limite para su devolucion " + p.getFechaFin().toString() + ".\n\tGracias";
+			SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+			String mensaje = "Saludos\n\nUsted, " + prestatario.getNombre() + ", ha realizado un prestamo de "
+					+ recurso.getNombre() + ", " +recurso.getDescripción() + " en la fecha " + f.format(p.getFechaInicio().getTime())
+					+ " que tiene como fecha limite para su devolucion " + f.format(p.getFechaFin().getTime()) + ".\n\nGracias";
 
 			try {
 				Mailer.Send(prestatario.getEmail(), "Devlolucion Proxima", mensaje);
@@ -162,7 +166,8 @@ public class CheckerDevoluciones {
 
 	private static boolean checkUltimaNotif(Prestamo p) {
 		int dif = 0;
-		dif = p.getFechaUltimaNotificicacion().compareTo(Calendar.getInstance())/86400000;
+		if(p.getFechaUltimaNotificicacion().equals(null)) return true;
+		dif = (int) (( Calendar.getInstance().getTimeInMillis() - p.getFechaUltimaNotificicacion().getTimeInMillis())/86400000);
 		return dif >= 1;
 	}
 
