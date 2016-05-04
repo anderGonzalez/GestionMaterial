@@ -54,7 +54,8 @@ public class CheckerDevoluciones {
 			e.printStackTrace();
 		}
 		for (Penalizacion pen : penaliz){
-			if(c.before(pen.getfFinal()) && c.after(pen.getfInicio())) return true; 
+			if(c.getTimeInMillis() >= pen.getfInicio().getTimeInMillis() 
+				&& c.getTimeInMillis() <= (pen.getfFinal().getTimeInMillis() + 86400000)) return true; 
 		}
 		return false;
 		

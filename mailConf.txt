@@ -1,2 +1,2 @@
-user = noreplykorreoa
-password = korreoelektroniko
+user = champskebab
+password = 123picapared

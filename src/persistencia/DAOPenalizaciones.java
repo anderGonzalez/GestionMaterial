@@ -75,12 +75,12 @@ public class DAOPenalizaciones {
 		ResultSet result;
 		String strSQL;
 		Penalizacion penalizacion;
-		ArrayList<Penalizacion> lista = null;
+		ArrayList<Penalizacion> lista = new ArrayList<>();
 
 		try {
 			stmt = PoolConexiones.getConexion().createStatement();
-			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin, idTipoUsuario"
-					+ " FROM Penalizaciones WHERE dniPenalizado=" + dni;
+			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin"
+					+ " FROM Penalizaciones WHERE dniPenalizado = " + dni;
 			result = stmt.executeQuery(strSQL);
 			while (result.next()) {
 				
