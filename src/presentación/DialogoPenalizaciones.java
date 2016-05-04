@@ -34,7 +34,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import dominio.ModeloTablaPenalizaciones;
 import dominio.ModeloTablaReservas;
+import dominio.Penalizacion;
 import dominio.Persona;
 import dominio.RecursoExtendido;
 import dominio.Reserva;
@@ -46,16 +48,17 @@ import persistencia.DAOReservas;
 
 public class DialogoPenalizaciones extends JDialog implements ListSelectionListener {
 	
+	final int ADMINISTRADOR = 1;
 	JMenuBar barra;
-	JMenu	menuReservas,  menuSalir;
+	JMenu	menuPenalizaciones,  menuSalir;
 	JMenuItem opcionMenu;
 
 	AbstractAction accEdit;
 	Persona persona;
 	JTable vTabla;
-	ModeloColumnasTablaReservas columnas;
-	TrazadorTablaReservas trazador;
-	ModeloTablaReservas tabla;
+	ModeloColumnasTablaPenalizaciones columnas;
+	TrazadorTablaPenalizaciones trazador;
+	ModeloTablaPenalizaciones tabla;
 	
 	public DialogoPenalizaciones (JFrame ventana, Persona persona){
 		super (ventana,"Penalizaciones",true);
@@ -63,6 +66,7 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 		this.setLocation(200,100);
 		this.setSize(600, 450);
 		this.crearAcciones();
+		this.darpermisos();
 		this.setJMenuBar(crearBarraMenu());
 		this.setContentPane(crearPanelVentana());
 		
@@ -70,6 +74,7 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 		this.setVisible(true);
 	}
 
+	
 	private Container crearPanelVentana() {
 		JPanel panel = new JPanel(new BorderLayout(0,10));
 		panel.add(crearToolBar(),BorderLayout.NORTH);
@@ -83,9 +88,14 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 		panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		panel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createLineBorder(Color.CYAN), "Datos Recurso"));
-		panel.add(crearPanelRecurso(),BorderLayout.NORTH);
 		panel.add(crearPanelTabla(),BorderLayout.CENTER);
 		return panel;
+	}
+	private void darpermisos() {
+		if (persona.getIdTipoUsuario() != ADMINISTRADOR ){
+			accEdit.setEnabled(false);
+		}
+		
 	}
 
 	private void crearAcciones() {
@@ -120,7 +130,7 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 
 	private JMenuBar crearBarraMenu() {
 		barra = new JMenuBar();
-		barra.add (crearMenuReservas());
+		barra.add (crearMenuPenalizaciones());
 		barra.add(Box.createHorizontalGlue());
 		barra.add (crearMenuSalir());
 		
@@ -142,16 +152,16 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 		return menuSalir;
 	}
 
-	private JMenu crearMenuReservas() {
+	private JMenu crearMenuPenalizaciones() {
 		
-		menuReservas = new JMenu ("Reservas");
-		menuReservas.setMnemonic(KeyEvent.VK_R);
+		menuPenalizaciones = new JMenu ("Penalizaciones");
+		menuPenalizaciones.setMnemonic(KeyEvent.VK_R);
 		
-		opcionMenu = menuReservas.add(accEdit);
+		opcionMenu = menuPenalizaciones.add(accEdit);
 		
-		menuReservas.addSeparator();	
+		menuPenalizaciones.addSeparator();	
 		
-		return menuReservas;
+		return menuPenalizaciones;
 		
 	}
 	private Component crearPanelTabla() {
@@ -169,10 +179,10 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 		return panelS;
 	}
 	private void crearTabla() {
-		trazador = new TrazadorTablaReservas();
-		columnas = new ModeloColumnasTablaReservas (trazador);
+		trazador = new TrazadorTablaPenalizaciones();
+		columnas = new ModeloColumnasTablaPenalizaciones(trazador);
 		try {
-			tabla = new ModeloTablaReservas(columnas,);
+			tabla = new ModeloTablaPenalizaciones(columnas, persona);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -194,28 +204,6 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 		return panel;
 	}
 
-	private Component crearPanelRecurso() {
-		JPanel panel = new JPanel (new GridLayout(2,2,20,20));
-		panel.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createEmptyBorder(10,10,0,10),
-				BorderFactory.createLoweredBevelBorder()));
-		panel.add(crearCampo("Nombre",recurso.getNombre()));
-		panel.add(crearCampo("Descripción",recurso.getDescripción()));
-		panel.add(crearCampo("Ubicación",recurso.getUbicación()));
-		panel.add(crearCampo("Responsable",recurso.getNombreResponsable()));
-		return panel;
-	}
-	
-	private JPanel crearCampo(String etiqueta, String valor) {
-		JPanel panel = new JPanel (new FlowLayout(FlowLayout.LEFT,20,0));
-		JLabel labelEtiqueta = new JLabel (etiqueta);
-		JLabel labelValor = new JLabel(valor);
-		labelValor.setFont (new Font("Arial",Font.BOLD|Font.ITALIC,16));
-		labelValor.setForeground(Color.DARK_GRAY);
-		panel.add(labelEtiqueta);
-		panel.add(labelValor);
-		return panel;
-	}
 
 	private class MiAccion extends AbstractAction {
 		
@@ -230,20 +218,16 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
-			switch (e.getActionCommand()){
-			case "Añadir": tratarOpciónAñadir(); break;
-			case "Borrar": tratarOpciónBorrar(); break;
-			case "Editar": tratarOpciónEditar();break;
-			case "Llevar": System.out.println("Ha elegido Llevar");break;
-			}
+			tratarOpciónEditar();
 	
 		}
+	}
 
 		private void tratarOpciónEditar() {
 			int index = vTabla.getSelectedRow();
-			Reserva reserva = tabla.getReservaAt(index);
-			DialogoDatosReserva dialogo = new DialogoDatosReserva (DialogoPenalizaciones.this,"Modificar Reserva", Sesion.getInstance().getUsuario(),
+			Penalizacion penalizacion = tabla.getPenalizacionAt(index);
+			System.out.println(penalizacion.getDni() + " " + penalizacion.getfInicio());
+			/*DialogoDatosReserva dialogo = new DialogoDatosReserva (DialogoPenalizaciones.this,"Modificar Reserva", Sesion.getInstance().getUsuario(),
 												recurso, tabla.getReservaAt(index), true);
 			if (dialogo.isCambioRealizado()){
 				 try {
@@ -254,55 +238,16 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 				}
 		    }
 		
-		}
-
-		private void tratarOpciónBorrar() {
-			Reserva reserva = tabla.getReservaAt(vTabla.getSelectedRow());
-			   int opcion =JOptionPane.showConfirmDialog(DialogoPenalizaciones.this, "Vas a eliminar la reserva de: "+recurso.getNombre(),
-					   "Eliminar reserva", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-			   if (opcion == JOptionPane.OK_OPTION){
-				   try{
-					   DAOReservas.eliminarReserva(reserva.getId());
-					  
-					   tabla.actualizar();
-					   if (tabla.getRowCount()>0)
-						   vTabla.setRowSelectionInterval(0, 0);
-				   }catch(Exception e2){
-					   e2.printStackTrace();
-				   }
-			   }
-		
-		}
-
-		private void tratarOpciónAñadir() {
-			DialogoDatosReserva dialogo = new DialogoDatosReserva (DialogoPenalizaciones.this,"Añadir nueva reserva",Sesion.getInstance().getUsuario(), recurso, true);
-			if (dialogo.isCambioRealizado()){
-				try {
-					tabla.actualizar();
-					if (tabla.getRowCount()>0)
-						vTabla.setRowSelectionInterval(0, 0);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
+		}*/
+	}
+		@Override
+		public void valueChanged(ListSelectionEvent arg0) {
+			int index = vTabla.getSelectedRow();
+			if (index == -1){
+				accEdit.setEnabled(false);
+			}else{
+				accEdit.setEnabled(true);
 			}
 		}
 
-	}
-
-	@Override
-	public void valueChanged(ListSelectionEvent arg0) {
-		int index = vTabla.getSelectedRow();
-		if (index == -1){
-			accDelete.setEnabled(false);
-			accEdit.setEnabled(false);
-		}else if (tabla.getReservaAt(index).getPersona().getId()!=Sesion.getInstance().getUsuario().getId()){
-			accDelete.setEnabled(false);
-			accEdit.setEnabled(false);
-		}else{
-			accDelete.setEnabled(true);
-			accEdit.setEnabled(true);
-		}
-		
-	}
-	
 }

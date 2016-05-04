@@ -8,17 +8,19 @@ import javax.swing.table.AbstractTableModel;
 import persistencia.DAOPenalizaciones;
 import persistencia.DAORecursos;
 import persistencia.DAOReservas;
+import presentación.ModeloColumnasTablaPenalizaciones;
 import presentación.ModeloColumnasTablaReservas;
 
 public class ModeloTablaPenalizaciones extends AbstractTableModel {
 	
 	final int ADMINISTRADOR = 1;
-	ModeloColumnasTablaReservas columnas;
+	ModeloColumnasTablaPenalizaciones columnas;
 	Persona persona;
 	ArrayList<Penalizacion> listaPenalizacion;
 	
-	public ModeloTablaPenalizaciones (ModeloColumnasTablaReservas columnas, Persona persona) throws Exception{
+	public ModeloTablaPenalizaciones (ModeloColumnasTablaPenalizaciones columnas, Persona persona) throws Exception{
 		super();
+		listaPenalizacion = new ArrayList<Penalizacion>();
 		this.columnas = columnas;
 		this.persona = persona;
 		if(persona.idTipoUsuario == ADMINISTRADOR){
@@ -27,10 +29,7 @@ public class ModeloTablaPenalizaciones extends AbstractTableModel {
 			listaPenalizacion =  DAOPenalizaciones.buscarPorDni(""+persona.id);
 
 		}
-		
 	}
-
-
 	public Penalizacion getPenalizacionAt(int indice){
 		return listaPenalizacion.get(indice);
 	}
@@ -42,13 +41,15 @@ public class ModeloTablaPenalizaciones extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		
-		return listaPenalizacion.size();
+		if(listaPenalizacion != null){
+			return listaPenalizacion.size();
+		}
+		return 0;
 	}
 
 	@Override
 	public Object getValueAt(int fila, int columna) {
-		Reserva a = listaPenalizacion.get(fila);
+		Penalizacion a = listaPenalizacion.get(fila);
 		return getFieldAt(a,columna);
 		
 	}
@@ -66,20 +67,22 @@ public class ModeloTablaPenalizaciones extends AbstractTableModel {
 
 	public void actualizar() throws Exception {
 		
-		listaPenalizacion = DAOReservas.getReservasRecurso(recurso);
+		if(persona.getIdTipoUsuario() == ADMINISTRADOR){
+			listaPenalizacion = DAOPenalizaciones.buscarPorDni("" + persona.id);
+			
+		}else{
+			listaPenalizacion = DAOPenalizaciones.obtenerPenalizaciones();
+		}
 		
 		this.fireTableDataChanged();
 	}
-	public void actualizarPorCambioDeFechas(LocalDateTime desde, LocalDateTime hasta){
-		listaPenalizacion = DAOReservas.getReservasRecursoEntreFechas(recurso, desde, hasta);
-		this.fireTableDataChanged();
-	}
-	public Object getFieldAt(Reserva reserva,int columna) {
+	
+	public Object getFieldAt(Penalizacion penalizacion,int columna) {
 		switch (columna){
-		case 0: return reserva.getPersona().getNombre();
-		case 1: return reserva.getDesde();
-		case 2: return reserva.getHasta();
-		case 3: return new Integer(reserva.getUrgencia());
+		case 0: return new Integer(penalizacion.getDni());
+		case 1: return new Integer(penalizacion.getIdPrestamo());
+		case 2: return penalizacion.getfInicio();
+		case 3: return penalizacion.getfFinal();
 	
 		}
 		return null;
