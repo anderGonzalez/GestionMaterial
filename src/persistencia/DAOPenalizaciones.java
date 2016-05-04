@@ -14,7 +14,7 @@ public class DAOPenalizaciones {
 		Penalizacion penalizacion;
 		try {
 
-			lista = new ArrayList<>();
+			lista = new ArrayList<Penalizacion>();
 			stmt = PoolConexiones.getConexion().createStatement();
 			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin FROM penalizaciones";
 			result = stmt.executeQuery(strSQL);
@@ -78,6 +78,7 @@ public class DAOPenalizaciones {
 		ArrayList<Penalizacion> lista = new ArrayList<>();
 
 		try {
+			lista = new ArrayList<Penalizacion>();
 			stmt = PoolConexiones.getConexion().createStatement();
 			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin"
 					+ " FROM Penalizaciones WHERE dniPenalizado=" + dni;

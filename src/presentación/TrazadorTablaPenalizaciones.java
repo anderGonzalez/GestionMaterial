@@ -2,7 +2,9 @@ package presentación;
 
 import java.awt.Component;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.GregorianCalendar;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -32,7 +34,9 @@ public class TrazadorTablaPenalizaciones extends DefaultTableCellRenderer {
 	}
 
 	private String formatearFecha(Object valor) {
-		LocalDateTime fecha = (LocalDateTime) valor;
+		GregorianCalendar grCa =(GregorianCalendar) valor;
+		ZonedDateTime zdt = grCa.toZonedDateTime();
+		LocalDateTime fecha = zdt.toLocalDateTime();
 		DateTimeFormatter formatter =   DateTimeFormatter.ofPattern("yyyy-MM-dd  HH:mm");
 	    return fecha.format(formatter);
 		

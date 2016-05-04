@@ -46,7 +46,7 @@ import persistencia.DAORecursos;
 import persistencia.DAOReservas;
 
 
-public class DialogoPenalizaciones extends JDialog implements ListSelectionListener {
+public class DialogoPenalizaciones extends JDialog {
 	
 	final int ADMINISTRADOR = 1;
 	JMenuBar barra;
@@ -189,7 +189,6 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 		}
 		vTabla = new JTable(tabla,columnas);
 		vTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		vTabla.getSelectionModel().addListSelectionListener(this);
 		vTabla.setFillsViewportHeight(true);
 		vTabla.getTableHeader().setReorderingAllowed(false);
 		if (tabla.getRowCount()>0)
@@ -240,14 +239,4 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 		
 		}*/
 	}
-		@Override
-		public void valueChanged(ListSelectionEvent arg0) {
-			int index = vTabla.getSelectedRow();
-			if (index == -1){
-				accEdit.setEnabled(false);
-			}else{
-				accEdit.setEnabled(true);
-			}
-		}
-
 }
