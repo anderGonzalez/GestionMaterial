@@ -48,6 +48,7 @@ import persistencia.DAOReservas;
 
 public class DialogoPenalizaciones extends JDialog implements ListSelectionListener {
 	
+	final int ADMINISTRADOR = 1;
 	JMenuBar barra;
 	JMenu	menuPenalizaciones,  menuSalir;
 	JMenuItem opcionMenu;
@@ -65,6 +66,7 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 		this.setLocation(200,100);
 		this.setSize(600, 450);
 		this.crearAcciones();
+		this.darpermisos();
 		this.setJMenuBar(crearBarraMenu());
 		this.setContentPane(crearPanelVentana());
 		
@@ -72,6 +74,7 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 		this.setVisible(true);
 	}
 
+	
 	private Container crearPanelVentana() {
 		JPanel panel = new JPanel(new BorderLayout(0,10));
 		panel.add(crearToolBar(),BorderLayout.NORTH);
@@ -87,6 +90,12 @@ public class DialogoPenalizaciones extends JDialog implements ListSelectionListe
 				BorderFactory.createLineBorder(Color.CYAN), "Datos Recurso"));
 		panel.add(crearPanelTabla(),BorderLayout.CENTER);
 		return panel;
+	}
+	private void darpermisos() {
+		if (persona.getIdTipoUsuario() != ADMINISTRADOR ){
+			accEdit.setEnabled(false);
+		}
+		
 	}
 
 	private void crearAcciones() {
