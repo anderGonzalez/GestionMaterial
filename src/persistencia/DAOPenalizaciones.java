@@ -16,7 +16,7 @@ public class DAOPenalizaciones {
 
 			lista = new ArrayList<>();
 			stmt = PoolConexiones.getConexion().createStatement();
-			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin, idTipoUsuario FROM penalizaciones";
+			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin FROM penalizaciones";
 			result = stmt.executeQuery(strSQL);
 			while (result.next()) {
 				
@@ -45,7 +45,7 @@ public class DAOPenalizaciones {
 
 		try {
 			stmt = PoolConexiones.getConexion().createStatement();
-			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin, idTipoUsuario"
+			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin"
 					+ " FROM Penalizaciones WHERE idPrestamo=" + idPenalizacion;
 			result = stmt.executeQuery(strSQL);
 			if (!result.next())
@@ -79,7 +79,7 @@ public class DAOPenalizaciones {
 
 		try {
 			stmt = PoolConexiones.getConexion().createStatement();
-			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin, idTipoUsuario"
+			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin"
 					+ " FROM Penalizaciones WHERE dniPenalizado=" + dni;
 			result = stmt.executeQuery(strSQL);
 			while (result.next()) {

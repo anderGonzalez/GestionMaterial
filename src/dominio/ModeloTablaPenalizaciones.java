@@ -20,6 +20,7 @@ public class ModeloTablaPenalizaciones extends AbstractTableModel {
 	
 	public ModeloTablaPenalizaciones (ModeloColumnasTablaPenalizaciones columnas, Persona persona) throws Exception{
 		super();
+		listaPenalizacion = new ArrayList<Penalizacion>();
 		this.columnas = columnas;
 		this.persona = persona;
 		if(persona.idTipoUsuario == ADMINISTRADOR){
@@ -40,8 +41,10 @@ public class ModeloTablaPenalizaciones extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		
-		return listaPenalizacion.size();
+		if(listaPenalizacion != null){
+			return listaPenalizacion.size();
+		}
+		return 0;
 	}
 
 	@Override
