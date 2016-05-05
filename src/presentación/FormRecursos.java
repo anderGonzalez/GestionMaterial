@@ -6,7 +6,9 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Calendar;
 
+import javax.mail.Session;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -31,6 +33,7 @@ import dominio.Persona;
 import dominio.Prestamo;
 import dominio.RecursoExtendido;
 import dominio.Reserva;
+import negocio.Sesion;
 import persistencia.DAOPrestamos;
 import persistencia.DAORecursos;
 import persistencia.DAOReservas;
@@ -300,9 +303,13 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 					"Quieres llevarte "+recurso.getNombre()+"?", "Llevar recurso",JOptionPane.YES_NO_OPTION);
 			
 			if(opcion == JOptionPane.YES_OPTION){
-				//poner recurso como llevado
+				
 				DialogoLlevar dialogo = new DialogoLlevar (FormRecursos.this,true);
-				Prestamo p = new Prestamo(null, null, null, null, opcion, opcion, opcion);
+				Calendar fechaFin = dialogo.getFechaFinal();
+				Prestamo p = new Prestamo(	Calendar.getInstance(),
+											fechaFin,
+											Sesion.getInstance().getUsuario().getId(),
+											recurso.getId());
 			}
 				
 			System.out.println("Ha elegido llevar");	
