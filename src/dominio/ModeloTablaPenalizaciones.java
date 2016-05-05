@@ -1,33 +1,28 @@
 package dominio;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
+import negocio.Sesion;
 import persistencia.DAOPenalizaciones;
 import persistencia.DAOPersonas;
-import persistencia.DAORecursos;
-import persistencia.DAOReservas;
 import presentación.ModeloColumnasTablaPenalizaciones;
-import presentación.ModeloColumnasTablaReservas;
 
 public class ModeloTablaPenalizaciones extends AbstractTableModel {
 	
 	final int ADMINISTRADOR = 1;
 	ModeloColumnasTablaPenalizaciones columnas;
-	Persona persona;
 	ArrayList<Penalizacion> listaPenalizacion;
 	
-	public ModeloTablaPenalizaciones (ModeloColumnasTablaPenalizaciones columnas, Persona persona) throws Exception{
+	public ModeloTablaPenalizaciones (ModeloColumnasTablaPenalizaciones columnas) throws Exception{
 		super();
 		listaPenalizacion = new ArrayList<Penalizacion>();
 		this.columnas = columnas;
-		this.persona = persona;
-		if(persona.idTipoUsuario == ADMINISTRADOR){
+		if(Sesion.getInstance().getUsuario().idTipoUsuario == ADMINISTRADOR){
 			listaPenalizacion = DAOPenalizaciones.obtenerPenalizaciones();
 		}else{
-			listaPenalizacion =  DAOPenalizaciones.buscarPorDni(""+persona.id);
+			listaPenalizacion =  DAOPenalizaciones.buscarPorDni(""+Sesion.getInstance().getUsuario().getId());
 
 		}
 	}
@@ -73,8 +68,8 @@ public class ModeloTablaPenalizaciones extends AbstractTableModel {
 
 	public void actualizar() throws Exception {
 		
-		if(persona.getIdTipoUsuario() == ADMINISTRADOR){
-			listaPenalizacion = DAOPenalizaciones.buscarPorDni("" + persona.id);
+		if(Sesion.getInstance().getUsuario().getIdTipoUsuario() == ADMINISTRADOR){
+			listaPenalizacion = DAOPenalizaciones.buscarPorDni("" + Sesion.getInstance().getUsuario().getId());
 			
 		}else{
 			listaPenalizacion = DAOPenalizaciones.obtenerPenalizaciones();
