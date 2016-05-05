@@ -231,8 +231,8 @@ public class DialogoPenalizaciones extends JDialog {
 			int index = vTabla.getSelectedRow();
 			Penalizacion penalizacion = tabla.getPenalizacionAt(index);
 			System.out.println(penalizacion.getDni() + " " + penalizacion.getfInicio());
-			/*DialogoDatosReserva dialogo = new DialogoDatosReserva (DialogoPenalizaciones.this,"Modificar Reserva", Sesion.getInstance().getUsuario(),
-												recurso, tabla.getReservaAt(index), true);
+			DialogoPenalizacionesEditar dialogo = new DialogoPenalizacionesEditar (DialogoPenalizaciones.this 
+									,penalizacion, true);
 			if (dialogo.isCambioRealizado()){
 				 try {
 					tabla.actualizar();
@@ -242,6 +242,5 @@ public class DialogoPenalizaciones extends JDialog {
 				}
 		    }
 		
-		}*/
 	}
 }
