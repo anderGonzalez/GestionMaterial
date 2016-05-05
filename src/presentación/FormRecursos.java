@@ -37,6 +37,7 @@ import negocio.Sesion;
 import persistencia.DAOPrestamos;
 import persistencia.DAORecursos;
 import persistencia.DAOReservas;
+import servicioPenalizaciones.CheckerDevoluciones;
 
 
 
@@ -304,12 +305,20 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 			
 			if(opcion == JOptionPane.YES_OPTION){
 				
-				DialogoLlevar dialogo = new DialogoLlevar (FormRecursos.this,true);
-				Calendar fechaFin = dialogo.getFechaFinal();
-				Prestamo p = new Prestamo(	Calendar.getInstance(),
-											fechaFin,
-											Sesion.getInstance().getUsuario().getId(),
-											recurso.getId());
+			
+				
+				if (!CheckerDevoluciones.isPenalizado(Sesion.getInstance().getUsuario())) {
+					DialogoLlevar dialogo = new DialogoLlevar(FormRecursos.this, true);
+					Calendar fechaFin = dialogo.getFechaFinal();
+					Prestamo p = new Prestamo(Calendar.getInstance(), fechaFin,
+							Sesion.getInstance().getUsuario().getId(), recurso.getId());
+				}else{
+					JOptionPane.showMessageDialog(	FormRecursos.this,
+													"Pues no puedes porque estas penalizado", 
+													"Va a ser que no", 
+													JOptionPane.ERROR_MESSAGE, 
+													new ImageIcon("iconos/penalizar.jpg"));
+				}
 			}
 				
 			System.out.println("Ha elegido llevar");	
