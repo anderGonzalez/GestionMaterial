@@ -52,4 +52,11 @@ public class Persona {
 	public boolean validarPassword(String password) {
 		return password.equals(this.password);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		Persona p = (Persona) obj;
+		return this.id == p.getId();
+	}
+	
 }
