@@ -187,7 +187,6 @@ public class DAOPrestamos
 	                     result.getInt("idPrestamo"),
 	                     result.getInt("dniPrestatario"),
 	                     result.getInt("idRecurso"));
-	      result.close();
 	      lista.add(p);
 	      
       }while(result.next());
