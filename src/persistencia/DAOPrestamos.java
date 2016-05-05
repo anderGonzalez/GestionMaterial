@@ -143,13 +143,15 @@ public class DAOPrestamos
     }
   }
   
-  static public Prestamo buscarPorIdRecurso(int idRecurso) throws Exception
+  static public ArrayList<Prestamo> buscarPorIdRecurso(int idRecurso) throws Exception
   {
     Statement stmt;
     ResultSet result;
     String strSQL;
     Prestamo p;
+    ArrayList<Prestamo> lista = new ArrayList<>();
     Calendar calIni,calFin,calUlt,calDev;
+    
     
     try
     {
@@ -159,40 +161,41 @@ public class DAOPrestamos
              " WHERE idRecurso="+idRecurso+';';
       result = stmt.executeQuery(strSQL);
       if(!result.next()) return null;
-      
-      calIni=Calendar.getInstance();
-      calFin=Calendar.getInstance();
-      calUlt=Calendar.getInstance();
-      calDev=Calendar.getInstance();
-      
-      calIni.setTime(result.getDate("fechaInicio",calIni));
-      calFin.setTime(result.getTimestamp("fechaFin",calFin));
-      try{
-    	  calUlt.setTime(result.getTimestamp("fechaUltimaNotificacion",calUlt));
-      }catch(NullPointerException e){
-    	  calUlt.set(Calendar.YEAR, 2001);
-    	  calUlt.set(Calendar.MONTH, Calendar.SEPTEMBER);
-    	  calUlt.set(Calendar.DAY_OF_MONTH, 11);  	  
-      }
-      try{
-    	  calDev.setTime(result.getTimestamp("fechaDevolucion",calDev));
-      }catch(NullPointerException e){
-    	  calDev = null;  
-      }
-     
-      p=new Prestamo(calIni,calFin,calDev,calUlt,
-                     result.getInt("idPrestamo"),
-                     result.getInt("dniPrestatario"),
-                     result.getInt("idRecurso"));
-      result.close();
-      return p;
-    }
-    
-    catch(SQLException e)
-    {
+      do{
+	    	  
+	      calIni=Calendar.getInstance();
+	      calFin=Calendar.getInstance();
+	      calUlt=Calendar.getInstance();
+	      calDev=Calendar.getInstance();
+	      
+	      calIni.setTime(result.getDate("fechaInicio",calIni));
+	      calFin.setTime(result.getTimestamp("fechaFin",calFin));
+	      try{
+	    	  calUlt.setTime(result.getTimestamp("fechaUltimaNotificacion",calUlt));
+	      }catch(NullPointerException e){
+	    	  calUlt.set(Calendar.YEAR, 2001);
+	    	  calUlt.set(Calendar.MONTH, Calendar.SEPTEMBER);
+	    	  calUlt.set(Calendar.DAY_OF_MONTH, 11);  	  
+	      }
+	      try{
+	    	  calDev.setTime(result.getTimestamp("fechaDevolucion",calDev));
+	      }catch(NullPointerException e){
+	    	  calDev = null;  
+	      }
+	     
+	      p=new Prestamo(calIni,calFin,calDev,calUlt,
+	                     result.getInt("idPrestamo"),
+	                     result.getInt("dniPrestatario"),
+	                     result.getInt("idRecurso"));
+	      result.close();
+	      lista.add(p);
+	      
+      }while(result.next());
+    }catch(SQLException e){
       e.printStackTrace();
       return null;
     }
+    return lista;
   }
 
   //

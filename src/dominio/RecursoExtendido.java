@@ -1,9 +1,11 @@
 package dominio;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import persistencia.DAOPersonas;
 import persistencia.DAOPrestamos;
+import persistencia.DAORecursos;
 import persistencia.DAOReservas;
 
 public class RecursoExtendido extends Recurso {
@@ -32,6 +34,15 @@ public class RecursoExtendido extends Recurso {
 	}
 	public Estado getEstado() {
 		return estado;
+	}
+	public boolean isPrestado() {
+		ArrayList<Prestamo> lista;
+		try {
+			lista = DAOPrestamos.buscarPorIdRecurso(id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 
