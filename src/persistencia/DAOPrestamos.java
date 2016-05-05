@@ -116,8 +116,18 @@ public class DAOPrestamos
       calDev=Calendar.getInstance();
       calIni.setTime(result.getDate("fechaInicio",calIni));
       calFin.setTime(result.getTimestamp("fechaFin",calFin));
-      calUlt.setTime(result.getTimestamp("fechaUltimaNotificacion",calUlt));
-      calDev.setTime(result.getTimestamp("fechaDevolucion",calDev));
+      try{
+    	  calUlt.setTime(result.getTimestamp("fechaUltimaNotificacion",calUlt));
+      }catch(NullPointerException e){
+    	  calUlt.set(Calendar.YEAR, 2001);
+    	  calUlt.set(Calendar.MONTH, Calendar.SEPTEMBER);
+    	  calUlt.set(Calendar.DAY_OF_MONTH, 11);  	  
+      }
+      try{
+    	  calDev.setTime(result.getTimestamp("fechaDevolucion",calDev));
+      }catch(NullPointerException e){
+    	  calDev = null;  
+      }
       p=new Prestamo(calIni,calFin,calDev,calUlt,
                      result.getInt("idPrestamo"),
                      result.getInt("dniPrestatario"),
@@ -149,14 +159,27 @@ public class DAOPrestamos
              " WHERE idRecurso="+idRecurso+';';
       result = stmt.executeQuery(strSQL);
       if(!result.next()) return null;
+      
       calIni=Calendar.getInstance();
       calFin=Calendar.getInstance();
       calUlt=Calendar.getInstance();
       calDev=Calendar.getInstance();
+      
       calIni.setTime(result.getDate("fechaInicio",calIni));
       calFin.setTime(result.getTimestamp("fechaFin",calFin));
-      calUlt.setTime(result.getTimestamp("fechaUltimaNotificacion",calUlt));
-      calDev.setTime(result.getTimestamp("fechaDevolucion",calDev));
+      try{
+    	  calUlt.setTime(result.getTimestamp("fechaUltimaNotificacion",calUlt));
+      }catch(NullPointerException e){
+    	  calUlt.set(Calendar.YEAR, 2001);
+    	  calUlt.set(Calendar.MONTH, Calendar.SEPTEMBER);
+    	  calUlt.set(Calendar.DAY_OF_MONTH, 11);  	  
+      }
+      try{
+    	  calDev.setTime(result.getTimestamp("fechaDevolucion",calDev));
+      }catch(NullPointerException e){
+    	  calDev = null;  
+      }
+     
       p=new Prestamo(calIni,calFin,calDev,calUlt,
                      result.getInt("idPrestamo"),
                      result.getInt("dniPrestatario"),
@@ -213,8 +236,8 @@ public class DAOPrestamos
 	public static boolean actualizarFechasPrestamo(Prestamo p){
 		Statement stmt;
 		String strSQL;
-		String strFechaDev = "null";
-	    String strFechaUltNot = "null";
+		String strFechaDev = "NULL";
+	    String strFechaUltNot = "NULL";
 	    Calendar calendario;
 	    int dia,mes,año,hora,min;
 	    
@@ -225,7 +248,7 @@ public class DAOPrestamos
 	          año=calendario.get(Calendar.YEAR);
 	          hora=calendario.get(Calendar.HOUR_OF_DAY);
 	          min=calendario.get(Calendar.MINUTE);
-	          strFechaDev=año+"-"+mes+'-'+dia+' '+hora+':'+min;
+	          strFechaDev="'" +año+"-"+mes+"-"+dia+" "+hora+":"+min + "'";
 	      }
 	      
 	      calendario=p.getFechaUltimaNotificicacion();
@@ -235,14 +258,14 @@ public class DAOPrestamos
 	          año=calendario.get(Calendar.YEAR);
 	          hora=calendario.get(Calendar.HOUR_OF_DAY);
 	          min=calendario.get(Calendar.MINUTE);
-	          strFechaUltNot=año+"-"+mes+'-'+dia+' '+hora+':'+min;
+	          strFechaUltNot="'" +año+"-"+mes+"-"+dia+" "+hora+":"+min + "'";
 	      }
 	    
 		try {
 			stmt=PoolConexiones.getConexion().createStatement();
 			strSQL="UPDATE PRESTAMO"+
-					" SET fechaUltimaNotificacion = "+"'"+strFechaUltNot+"',"+
-					" fechaDevolucion = "+"'"+strFechaDev+"'"+
+					" SET fechaUltimaNotificacion = "+strFechaUltNot+","+
+					" fechaDevolucion = " + strFechaDev +
 		             " WHERE idPrestamo = "+ p.getId();
 		    stmt.executeUpdate(strSQL);
 		    return true;
@@ -265,9 +288,10 @@ public class DAOPrestamos
 	             " WHERE fechaDevolucion is null";
 	      result = stmt.executeQuery(strSQL);
 	      if(!result.next()) throw new Exception("sentencia errónea: " + strSQL);
-	      do{
-	    	 resultado.add(buscarPorId(result.getInt("idPrestamo")));
-	      }while(result.next());
+				do {
+					resultado.add(buscarPorId(result.getInt("idPrestamo")));
+				} while (result.next());
+			
 	    } catch (Exception e){
 	    	System.out.println(e.getMessage());
 	    	e.printStackTrace();

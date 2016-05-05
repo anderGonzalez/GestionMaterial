@@ -14,9 +14,9 @@ public class DAOPenalizaciones {
 		Penalizacion penalizacion;
 		try {
 
-			lista = new ArrayList<>();
+			lista = new ArrayList<Penalizacion>();
 			stmt = PoolConexiones.getConexion().createStatement();
-			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin, idTipoUsuario FROM penalizaciones";
+			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin FROM penalizaciones";
 			result = stmt.executeQuery(strSQL);
 			while (result.next()) {
 				
@@ -45,7 +45,7 @@ public class DAOPenalizaciones {
 
 		try {
 			stmt = PoolConexiones.getConexion().createStatement();
-			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin, idTipoUsuario"
+			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin"
 					+ " FROM Penalizaciones WHERE idPrestamo=" + idPenalizacion;
 			result = stmt.executeQuery(strSQL);
 			if (!result.next())
@@ -75,11 +75,12 @@ public class DAOPenalizaciones {
 		ResultSet result;
 		String strSQL;
 		Penalizacion penalizacion;
-		ArrayList<Penalizacion> lista = null;
+		ArrayList<Penalizacion> lista = new ArrayList<>();
 
 		try {
+			lista = new ArrayList<Penalizacion>();
 			stmt = PoolConexiones.getConexion().createStatement();
-			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin, idTipoUsuario"
+			strSQL = "SELECT dniPenalizado, idPrestamo, fechaInicio, fechaFin"
 					+ " FROM Penalizaciones WHERE dniPenalizado=" + dni;
 			result = stmt.executeQuery(strSQL);
 			while (result.next()) {
@@ -115,13 +116,12 @@ public class DAOPenalizaciones {
 			
 			stmt = PoolConexiones.getConexion().createStatement();
 			strSQL = "INSERT INTO Penalizaciones (dniPenalizado, idPrestamo,fechaInicio,fechaFin)" + " VALUES ('"
-					+ p.getDni() + "','" + p.getIdPrestamo() + "','" + fInicio + "'," + fFin + ")";
+					+ p.getDni() + "','" + p.getIdPrestamo() + "','" + fInicio + "','" + fFin + "')";
 			stmt.executeUpdate(strSQL);
 			return true;
 		}
 
 		catch (SQLException e) {
-			e.printStackTrace();
 			return false;
 		}
 	}

@@ -44,7 +44,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 	JMenu	menuRecursos,  menuSalir;
 	JMenuItem opcionMenu;
 	
-	AbstractAction accAdd,accDelete,accEdit,accReservar,accTake,accReturn;
+	AbstractAction accAdd,accDelete,accEdit,accReservar,accTake,accReturn, accPenalizar;
 	ModeloTablaRecursos tabla;
 	 
 	JTable vTabla;
@@ -115,6 +115,8 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 		accReservar = new MiAccion ("Reservar",new ImageIcon("iconos/month.png"),"Reservar",KeyEvent.VK_R);
 		accTake = new MiAccion ("Llevar",new ImageIcon("iconos/agt_login.png"),"Llevar",KeyEvent.VK_P);
 		accReturn = new MiAccion ("Devolver",new ImageIcon("iconos/return.png"),"Devolver",KeyEvent.VK_B);
+		accPenalizar = new MiAccion("Penalizar", new ImageIcon("iconos/penalizar.jpg"), "Penalizar", KeyEvent.VK_P);
+		
 	}
 
 	private JToolBar crearToolBar() {
@@ -129,6 +131,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 		
 		toolBar.add(accReservar);
 		toolBar.add(accTake);
+		toolBar.add(accPenalizar);
 		toolBar.add(accReturn);
 		
 		
@@ -186,6 +189,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 		
 		menuRecursos.addSeparator();
 		
+		opcionMenu = menuRecursos.add(accPenalizar);
 		opcionMenu = menuRecursos.add(accReservar);
 		opcionMenu = menuRecursos.add(accTake);
 		opcionMenu = menuRecursos.add(accReturn);
@@ -215,10 +219,22 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 			case "Borrar": tratarOpciónBorrar(); break;
 			case "Editar": tratarOpciónEditar();break;
 			case "Reservar": tratarOpciónReservar();break;
+			case "Penalizar": tratarOpciónPenalizaciones();break;
 			case "Llevar": tratarOpciónLlevar();break;
 			case "Devolver": tratarOpciónDevolver(); break;
 			}
 	
+		}
+		
+		private void tratarOpciónPenalizaciones() {
+			DialogoPenalizaciones dialogo = new DialogoPenalizaciones(FormRecursos.this, FormRecursos.this.persona);
+			try {
+				FormRecursos.this.tabla.actualizar();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 
 		private void tratarOpciónReservar() {

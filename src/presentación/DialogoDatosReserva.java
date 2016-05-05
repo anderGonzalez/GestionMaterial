@@ -34,6 +34,7 @@ import dominio.Persona;
 import dominio.RecursoExtendido;
 import dominio.Reserva;
 import persistencia.DAOReservas;
+import servicioPenalizaciones.CheckerDevoluciones;
 
 public class DialogoDatosReserva extends JDialog implements ActionListener,PropertyChangeListener{
 	
@@ -183,7 +184,17 @@ public class DialogoDatosReserva extends JDialog implements ActionListener,Prope
 	public void actionPerformed(ActionEvent e) {
 		
 		switch (e.getActionCommand()){
-		case "OK" : if (editando){
+		case "OK" :
+			
+			if(CheckerDevoluciones.isPenalizado(persona)) {
+				JOptionPane.showMessageDialog(this,"Se encuenta penalizado", "No puede realizar reservas hasta saldar su deuda con la justicia",
+    			    JOptionPane.ERROR_MESSAGE);
+			}
+			else{
+				if (editando){
+					
+					
+					
 					try {
 						
 							DAOReservas.modificarReserva(reserva.getId(),desde, hasta,
@@ -195,7 +206,7 @@ public class DialogoDatosReserva extends JDialog implements ActionListener,Prope
 						}
 						JOptionPane.showMessageDialog(this, "Reserva actualizada",
 								"Accion realizada", JOptionPane.INFORMATION_MESSAGE);
-					}else{
+				}else{
 						
 						DAOReservas.insertarReserva(new Reserva(0,this.persona,this.recurso, 
 								this.desde, this.hasta, Integer.valueOf(txUrgencia.getText())));
@@ -205,7 +216,11 @@ public class DialogoDatosReserva extends JDialog implements ActionListener,Prope
 					}
 					this.cambioRealizado = true;
 					this.dispose();
-					break;
+					
+			}
+			break;
+			
+			
 					
 		case "Cancelar":
 					this.dispose();

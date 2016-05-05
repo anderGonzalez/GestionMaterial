@@ -2,6 +2,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import presentación.FormLogin;
+import servicioPenalizaciones.CheckerDevolucionesRutina;
 
 public class StartClas
 {
@@ -23,5 +24,6 @@ public class StartClas
 		e.printStackTrace();
 	}
     new FormLogin();
+    new CheckerDevolucionesRutina(15);
   }
 }
