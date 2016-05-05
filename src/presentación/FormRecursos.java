@@ -230,7 +230,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 		}
 		
 		private void tratarOpciónPenalizaciones() {
-			DialogoPenalizaciones dialogo = new DialogoPenalizaciones(FormRecursos.this, FormRecursos.this.persona);
+			DialogoPenalizaciones dialogo = new DialogoPenalizaciones(FormRecursos.this);
 			try {
 				FormRecursos.this.tabla.actualizar();
 			} catch (Exception e) {
