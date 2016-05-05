@@ -28,7 +28,9 @@ import javax.swing.event.ListSelectionListener;
 
 import dominio.ModeloTablaRecursos;
 import dominio.Persona;
+import dominio.Prestamo;
 import dominio.RecursoExtendido;
+import dominio.Reserva;
 import persistencia.DAOPrestamos;
 import persistencia.DAORecursos;
 import persistencia.DAOReservas;
@@ -276,7 +278,18 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 		}
 		
 		private void tratarOpciónLlevar() {
-			System.out.println("Ha elegido llevar");
+			int index = vTabla.getSelectedRow() ;
+			RecursoExtendido recurso = tabla.getRecursoAt(index);
+			int opcion = JOptionPane.showConfirmDialog(FormRecursos.this,
+					"Quieres llevarte "+recurso.getNombre()+"?", "Llevar recurso",JOptionPane.YES_NO_OPTION);
+			
+			if(opcion == JOptionPane.YES_OPTION){
+				//poner recurso como llevado
+				DialogoLlevar dialogo = new DialogoLlevar (FormRecursos.this,true);
+				Prestamo p = new Prestamo(null, null, null, null, opcion, opcion, opcion);
+			}
+				
+			System.out.println("Ha elegido llevar");	
 		}
 		
 		private void tratarOpciónDevolver() {
