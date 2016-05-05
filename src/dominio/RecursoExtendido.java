@@ -46,8 +46,8 @@ public class RecursoExtendido extends Recurso {
 		}
 		
 		for(Prestamo p : lista){
-			if(!(p.getFechaDevolucion() == null)){
-				if(p.getFechaDevolucion().before(Calendar.getInstance())) return true;
+			if(p.getFechaDevolucion() == null){
+				return true;
 			}
 		}
 		return false;
@@ -78,6 +78,23 @@ public class RecursoExtendido extends Recurso {
 		}
 		
 		return persona;
+	}
+	
+	public Prestamo getPrestamoActivo(){
+		ArrayList<Prestamo> lista = null;
+		try {
+			lista = DAOPrestamos.buscarPorIdRecurso(id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(Prestamo p : lista){
+			if(p.getFechaDevolucion() == null){
+				return p;
+			}
+		}
+		return null;
 	}
 	
 
