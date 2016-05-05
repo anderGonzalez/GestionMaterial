@@ -304,14 +304,16 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 					"Quieres llevarte "+recurso.getNombre()+"?", "Llevar recurso",JOptionPane.YES_NO_OPTION);
 			
 			if(opcion == JOptionPane.YES_OPTION){
-				
-			
-				
 				if (!CheckerDevoluciones.isPenalizado(Sesion.getInstance().getUsuario())) {
 					DialogoLlevar dialogo = new DialogoLlevar(FormRecursos.this, true);
 					Calendar fechaFin = dialogo.getFechaFinal();
 					Prestamo p = new Prestamo(Calendar.getInstance(), fechaFin,
 							Sesion.getInstance().getUsuario().getId(), recurso.getId());
+					try {
+						DAOPrestamos.addPrestamo(p);
+					} catch (Exception e) {
+						System.out.println("Error añadiendo el prestamo");
+					}
 				}else{
 					JOptionPane.showMessageDialog(	FormRecursos.this,
 													"Pues no puedes porque estas penalizado", 
@@ -325,7 +327,29 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 		}
 		
 		private void tratarOpciónDevolver() {
-			System.out.println("Ha elegido devolver");
+			int index = vTabla.getSelectedRow() ;
+			RecursoExtendido recurso = tabla.getRecursoAt(index);
+			int opcion = JOptionPane.showConfirmDialog(FormRecursos.this,
+				"Quieres devolver "+recurso.getNombre()+"?", "Devolver recurso",JOptionPane.YES_NO_OPTION);
+		
+			if(opcion == JOptionPane.YES_OPTION){
+				if (recurso.isPrestado() && recurso.getPrestatario().equals(Sesion.getInstance().getUsuario())) {
+					try {
+						Prestamo prestamo = recurso.getPrestamoActivo();
+						prestamo.setFechaDevolucion(Calendar.getInstance());
+						DAOPrestamos.actualizarFechasPrestamo(prestamo);
+					} catch (Exception e) {
+						System.out.println("Error actualizando el prestamo");
+					}
+				}else{
+					JOptionPane.showMessageDialog(	FormRecursos.this,
+													"Este recurso no está a tu nombre", 
+													"Va a ser que no", 
+													JOptionPane.ERROR_MESSAGE, 
+													new ImageIcon("iconos/penalizar.jpg"));
+				}
+			}
+			System.out.println("Ha elegido llevar");
 		}
 	}
 
