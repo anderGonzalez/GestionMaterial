@@ -44,7 +44,7 @@ public class RecursoExtendido extends Recurso {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		if(lista == null) return false;
 		for(Prestamo p : lista){
 			if(p.getFechaDevolucion() == null){
 				return true;
