@@ -48,21 +48,21 @@ import persistencia.DAOReservas;
 
 public class DialogoPenalizaciones extends JDialog {
 	
+
+	private static final long serialVersionUID = 1L;
 	final int ADMINISTRADOR = 1;
 	JMenuBar barra;
 	JMenu	menuPenalizaciones,  menuSalir;
 	JMenuItem opcionMenu;
 
 	AbstractAction accEdit;
-	Persona persona;
 	JTable vTabla;
 	ModeloColumnasTablaPenalizaciones columnas;
 	TrazadorTablaPenalizaciones trazador;
 	ModeloTablaPenalizaciones tabla;
 	
-	public DialogoPenalizaciones (JFrame ventana, Persona persona){
+	public DialogoPenalizaciones (JFrame ventana){
 		super (ventana,"Penalizaciones",true);
-		this.persona = persona;
 		this.setLocation(200,100);
 		this.setSize(600, 450);
 		this.crearAcciones();
@@ -92,7 +92,7 @@ public class DialogoPenalizaciones extends JDialog {
 		return panel;
 	}
 	private void darpermisos() {
-		if (persona.getIdTipoUsuario() != ADMINISTRADOR ){
+		if (Sesion.getInstance().getUsuario().getIdTipoUsuario() != ADMINISTRADOR ){
 			accEdit.setEnabled(false);
 		}
 		
@@ -182,7 +182,7 @@ public class DialogoPenalizaciones extends JDialog {
 		trazador = new TrazadorTablaPenalizaciones();
 		columnas = new ModeloColumnasTablaPenalizaciones(trazador);
 		try {
-			tabla = new ModeloTablaPenalizaciones(columnas, persona);
+			tabla = new ModeloTablaPenalizaciones(columnas);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -206,6 +206,11 @@ public class DialogoPenalizaciones extends JDialog {
 
 	private class MiAccion extends AbstractAction {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public MiAccion (String texto, Icon imagen, String descrip, Integer nemonic){
 			super(texto,imagen);
 			

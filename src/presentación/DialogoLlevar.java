@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -40,7 +41,7 @@ public class DialogoLlevar extends JDialog implements ActionListener,PropertyCha
 	final static String  TITULO = "Llevar recurso";
 	private Boolean cambioHecho = false;
 	private Calendar fFin;
-	private JDateChooser dchFin;
+	private JDateChooser dchFin = null;
 	
 	public DialogoLlevar(JFrame frame, boolean modo){
 		super (frame,TITULO,modo);
@@ -50,41 +51,73 @@ public class DialogoLlevar extends JDialog implements ActionListener,PropertyCha
 
 	private void crearVentana() {
 		this.setLocation(280,200);
-		this.setSize(300, 380);
+		this.setSize(300, 150);
 		this.setContentPane(crearPanelDialogo());
 		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
-	
+
 	private Container crearPanelDialogo() {
 		JPanel pDialogo = new JPanel(new BorderLayout());
-		pDialogo.add(fFin = crearCampoFecha("Fecha devolución", LocalDate.now()),BorderLayout.CENTER);
+		pDialogo.add(crearCampoFecha("Fecha devolución", LocalDate.now()),BorderLayout.CENTER);
+		pDialogo.add(crearPanelBotones(),BorderLayout.SOUTH);
 		return pDialogo;
 	}
 	
+	private Component crearPanelBotones() {
+		JPanel panel = new JPanel (new FlowLayout(FlowLayout.CENTER,30,0));
+		JButton bOk = new JButton ("Validar");
+		bOk.setActionCommand("OK");
+		bOk.addActionListener(this);
+		JButton bCancel = new JButton ("Cancelar");
+		bCancel.setActionCommand("Cancelar");
+		bCancel.addActionListener(this);
+		
+		panel.add(bOk);
+		panel.add(bCancel);
+		return panel;
+	}
+
 	private JDateChooser crearCampoFecha(String titulo,LocalDate fecha) {
 		
 		Date date = Date.from(fecha.atStartOfDay(ZoneId.systemDefault()).toInstant());
 		String dateFormat ="yyyy-MM-dd  HH:mm";
-		JDateChooser campoFecha = new JDateChooser(date,dateFormat);
+		dchFin = new JDateChooser(date,dateFormat);
 		
-		campoFecha.setBorder(BorderFactory.createTitledBorder(
+		dchFin.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createLineBorder(Color.CYAN),titulo));
-		campoFecha.setFont(new Font("Arial",Font.BOLD|Font.ITALIC,18));
-		return campoFecha;
+		dchFin.setFont(new Font("Arial",Font.BOLD|Font.ITALIC,18));
+		dchFin.addPropertyChangeListener(this);
+		
+		return dchFin;
 	}
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
 		
 		if ("date".equals(e.getPropertyName())) {
+			
 			Instant instant = Instant.ofEpochMilli(dchFin.getDate().getTime());
-			instant.toEpochMilli()
-			fFin = Calendar.getInstance().setTimeInMillis(instant.toEpochMilli());
+			long millis = instant.toEpochMilli();
+			fFin = Calendar.getInstance();
+			fFin.setTimeInMillis(millis);
 		}
 	}
 
 	public Calendar getFechaFinal() {
 		if(!cambioHecho)return null;
 		return fFin;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		switch (e.getActionCommand()){
+			case "OK":
+				cambioHecho = true;
+				break;
+			case "Cancelar":
+				cambioHecho = false;
+				break;
+		}
+		this.dispose();
 	}
 }
