@@ -2,6 +2,7 @@ package dominio;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import persistencia.DAOPersonas;
 import persistencia.DAOPrestamos;
@@ -36,13 +37,47 @@ public class RecursoExtendido extends Recurso {
 		return estado;
 	}
 	public boolean isPrestado() {
-		ArrayList<Prestamo> lista;
+		ArrayList<Prestamo> lista = null;
 		try {
 			lista = DAOPrestamos.buscarPorIdRecurso(id);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		for(Prestamo p : lista){
+			if(!(p.getFechaDevolucion() == null)){
+				if(p.getFechaDevolucion().before(Calendar.getInstance())) return true;
+			}
+		}
+		return false;
+	}
+	
+	public Persona getPrestatario(){
+		Persona persona = null;
+		ArrayList<Prestamo> lista = null;
+		try {
+			lista = DAOPrestamos.buscarPorIdRecurso(id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(Prestamo p : lista){
+			if(p.getFechaDevolucion() == null){
+				try {
+					persona = DAOPersonas.buscarPorId(p.getIdPrestatario());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				break;
+				
+			}
+		}
+		
+		return persona;
 	}
 	
 

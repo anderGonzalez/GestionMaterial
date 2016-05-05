@@ -1,6 +1,8 @@
 package negocio;
 import persistencia.*;
 import dominio.*;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class CtrlPrestamos
@@ -31,7 +33,7 @@ public class CtrlPrestamos
      
     try
     {
-      return DAOPrestamos.buscarPorIdRecurso(idRecurso);
+      return DAOPrestamos.buscarPorIdRecurso(idRecurso).get(0);
     }
     catch (Exception e) {return null;}
   }
@@ -57,7 +59,7 @@ public class CtrlPrestamos
      
     try
     {
-      if((prest=DAOPrestamos.buscarPorIdRecurso(idRecurso))==null) return false;
+      if((prest=DAOPrestamos.buscarPorIdRecurso(idRecurso).get(0))==null) return false;
       if(prest.getIdPrestatario()!=Sesion.getInstance().getUsuario().getId())
         return false;
       if(!DAOPrestamos.eliminarPrestamo(prest)) return false;
