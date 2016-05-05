@@ -307,12 +307,14 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 				if (!CheckerDevoluciones.isPenalizado(Sesion.getInstance().getUsuario())) {
 					DialogoLlevar dialogo = new DialogoLlevar(FormRecursos.this, true);
 					Calendar fechaFin = dialogo.getFechaFinal();
-					Prestamo p = new Prestamo(Calendar.getInstance(), fechaFin,
-							Sesion.getInstance().getUsuario().getId(), recurso.getId());
-					try {
-						DAOPrestamos.addPrestamo(p);
-					} catch (Exception e) {
-						System.out.println("Error añadiendo el prestamo");
+					if (fechaFin != null){
+						Prestamo p = new Prestamo(Calendar.getInstance(), fechaFin,
+								Sesion.getInstance().getUsuario().getId(), recurso.getId());
+						try {
+							DAOPrestamos.addPrestamo(p);
+						} catch (Exception e) {
+							System.out.println("Error añadiendo el prestamo");
+						}
 					}
 				}else{
 					JOptionPane.showMessageDialog(	FormRecursos.this,
@@ -349,7 +351,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 													new ImageIcon("iconos/penalizar.jpg"));
 				}
 			}
-			System.out.println("Ha elegido llevar");
+			System.out.println("Ha elegido devolver");
 		}
 	}
 

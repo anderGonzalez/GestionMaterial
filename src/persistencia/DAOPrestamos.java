@@ -65,7 +65,7 @@ public class DAOPrestamos
           año=calendario.get(Calendar.YEAR);
           hora=calendario.get(Calendar.HOUR_OF_DAY);
           min=calendario.get(Calendar.MINUTE);
-          strFechaDev=año+"-"+mes+'-'+dia+' '+hora+':'+min;
+          strFechaDev="'"+año+"-"+mes+'-'+dia+' '+hora+':'+min+"'";
       }
       
       calendario=p.getFechaUltimaNotificicacion();
@@ -75,12 +75,12 @@ public class DAOPrestamos
           año=calendario.get(Calendar.YEAR);
           hora=calendario.get(Calendar.HOUR_OF_DAY);
           min=calendario.get(Calendar.MINUTE);
-          strFechaUltNot=año+"-"+mes+'-'+dia+' '+hora+':'+min;
+          strFechaUltNot="'"+año+"-"+mes+'-'+dia+' '+hora+':'+min+"'";
       }
       
       stmt=PoolConexiones.getConexion().createStatement();
       strSQL="INSERT INTO Prestamo(fechaInicio,fechaFin,fechaDevolucion,fechaUltimaNotificacion,idRecurso,dniPrestatario) "+
-        "VALUES ('"+strFechaInicio+"','"+strFechaFin+"','"+strFechaDev+"','"+strFechaUltNot+"',"+
+        "VALUES ('"+strFechaInicio+"','"+strFechaFin+"',"+strFechaDev+","+strFechaUltNot+","+
                   p.getIdRecurso()+"," +p.getIdPrestatario()+")";
       stmt.executeUpdate(strSQL);
       return true;
