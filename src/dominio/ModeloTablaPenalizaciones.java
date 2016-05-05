@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
 import persistencia.DAOPenalizaciones;
+import persistencia.DAOPersonas;
 import persistencia.DAORecursos;
 import persistencia.DAOReservas;
 import presentación.ModeloColumnasTablaPenalizaciones;
@@ -50,8 +51,13 @@ public class ModeloTablaPenalizaciones extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int fila, int columna) {
 		Penalizacion a = listaPenalizacion.get(fila);
-		return getFieldAt(a,columna);
-		
+		try {
+			return getFieldAt(a,columna);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 		
 	@Override
@@ -77,10 +83,10 @@ public class ModeloTablaPenalizaciones extends AbstractTableModel {
 		this.fireTableDataChanged();
 	}
 	
-	public Object getFieldAt(Penalizacion penalizacion,int columna) {
+	public Object getFieldAt(Penalizacion penalizacion,int columna) throws Exception {
 		switch (columna){
-		case 0: return new Integer(penalizacion.getDni());
-		case 1: return new Integer(penalizacion.getIdPrestamo());
+		case 0: return DAOPersonas.buscarPorId( penalizacion.getDni()).getNombre();
+		case 1: return penalizacion.getIdPrestamo();
 		case 2: return penalizacion.getfInicio();
 		case 3: return penalizacion.getfFinal();
 	
