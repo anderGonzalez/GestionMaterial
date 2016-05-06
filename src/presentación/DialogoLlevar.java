@@ -48,6 +48,12 @@ public class DialogoLlevar extends JDialog implements ActionListener,PropertyCha
 		crearVentana();
 		this.setVisible(true);
 	}
+	
+	public DialogoLlevar(JDialog frame, boolean modo){
+		super (frame,TITULO,modo);
+		crearVentana();
+		this.setVisible(true);
+	}
 
 	private void crearVentana() {
 		this.setLocation(280,200);

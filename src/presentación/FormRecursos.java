@@ -204,7 +204,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 	}
 
 	
-	private class MiAccion extends AbstractAction {
+	public class MiAccion extends AbstractAction {
 		
 		public MiAccion (String texto, Icon imagen, String descrip, Integer nemonic){
 			super(texto,imagen);
@@ -298,30 +298,38 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 		}
 		
 		private void tratarOpciónLlevar() {
-			int index = vTabla.getSelectedRow() ;
+			int index = vTabla.getSelectedRow();
 			RecursoExtendido recurso = tabla.getRecursoAt(index);
 			int opcion = JOptionPane.showConfirmDialog(FormRecursos.this,
 					"Quieres llevarte "+recurso.getNombre()+"?", "Llevar recurso",JOptionPane.YES_NO_OPTION);
 			
 			if(opcion == JOptionPane.YES_OPTION){
-				if (!CheckerDevoluciones.isPenalizado(Sesion.getInstance().getUsuario())) {
-					DialogoLlevar dialogo = new DialogoLlevar(FormRecursos.this, true);
-					Calendar fechaFin = dialogo.getFechaFinal();
-					if (fechaFin != null){
-						Prestamo p = new Prestamo(Calendar.getInstance(), fechaFin,
-								Sesion.getInstance().getUsuario().getId(), recurso.getId());
-						try {
-							DAOPrestamos.addPrestamo(p);
-						} catch (Exception e) {
-							System.out.println("Error añadiendo el prestamo");
+				if(!recurso.isPrestado()){
+					if (!CheckerDevoluciones.isPenalizado(Sesion.getInstance().getUsuario())) {
+						DialogoLlevar dialogo = new DialogoLlevar(FormRecursos.this, true);
+						Calendar fechaFin = dialogo.getFechaFinal();
+						if (fechaFin != null){
+							Prestamo p = new Prestamo(Calendar.getInstance(), fechaFin,
+									Sesion.getInstance().getUsuario().getId(), recurso.getId());
+							try {
+								DAOPrestamos.addPrestamo(p);
+							} catch (Exception e) {
+								System.out.println("Error añadiendo el prestamo");
+							}
 						}
+					}else{
+						JOptionPane.showMessageDialog(	FormRecursos.this,
+														"Pues no puedes porque estas penalizado", 
+														"Va a ser que no", 
+														JOptionPane.ERROR_MESSAGE, 
+														new ImageIcon("iconos/penalizar.jpg"));
 					}
 				}else{
 					JOptionPane.showMessageDialog(	FormRecursos.this,
-													"Pues no puedes porque estas penalizado", 
-													"Va a ser que no", 
-													JOptionPane.ERROR_MESSAGE, 
-													new ImageIcon("iconos/penalizar.jpg"));
+							"Este recurso no está disponible", 
+							"Va a ser que no", 
+							JOptionPane.ERROR_MESSAGE, 
+							new ImageIcon("iconos/kopeteaway.png"));
 				}
 			}
 				
@@ -348,7 +356,7 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 													"Este recurso no está a tu nombre", 
 													"Va a ser que no", 
 													JOptionPane.ERROR_MESSAGE, 
-													new ImageIcon("iconos/penalizar.jpg"));
+													new ImageIcon("iconos/return.png"));
 				}
 			}
 			System.out.println("Ha elegido devolver");

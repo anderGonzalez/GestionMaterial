@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Calendar;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -35,12 +36,15 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import dominio.ModeloTablaReservas;
+import dominio.Prestamo;
 import dominio.RecursoExtendido;
 import dominio.Reserva;
 import negocio.Sesion;
 import persistencia.DAOPrestamos;
 import persistencia.DAORecursos;
 import persistencia.DAOReservas;
+import presentación.FormRecursos.MiAccion;
+import servicioPenalizaciones.CheckerDevoluciones;
 
 
 public class DialogReserva extends JDialog implements ListSelectionListener {
@@ -49,7 +53,7 @@ public class DialogReserva extends JDialog implements ListSelectionListener {
 	JMenu	menuReservas,  menuSalir;
 	JMenuItem opcionMenu;
 
-	AbstractAction accAdd,accDelete,accEdit,accTake;
+	AbstractAction accAdd,accDelete,accEdit,accTake,accReturn;
 	RecursoExtendido recurso;
 	JTable vTabla;
 	ModeloColumnasTablaReservas columnas;
@@ -92,6 +96,7 @@ public class DialogReserva extends JDialog implements ListSelectionListener {
 		accDelete = new MiAccion ("Borrar",new ImageIcon("iconos/edit_remove.png"),"Borrar",KeyEvent.VK_D);
 		accEdit = new MiAccion ("Editar",new ImageIcon("iconos/edit.png"),"Editar",KeyEvent.VK_E);
 		accTake = new MiAccion ("Llevar",new ImageIcon("iconos/agt_login.png"),"Llevar",KeyEvent.VK_P);
+		accReturn = new MiAccion ("Devolver",new ImageIcon("iconos/return.png"),"Devolver",KeyEvent.VK_B);
 	}
 
 	private JToolBar crearToolBar() {
@@ -105,6 +110,7 @@ public class DialogReserva extends JDialog implements ListSelectionListener {
 		toolBar.addSeparator(new Dimension (20,0));
 		
 		toolBar.add(accTake);
+		toolBar.add(accReturn);
 		
 		toolBar.add(Box.createHorizontalGlue());
 		
@@ -245,7 +251,8 @@ public class DialogReserva extends JDialog implements ListSelectionListener {
 			case "Añadir": tratarOpciónAñadir(); break;
 			case "Borrar": tratarOpciónBorrar(); break;
 			case "Editar": tratarOpciónEditar();break;
-			case "Llevar": System.out.println("Ha elegido Llevar");break;
+			case "Llevar": tratarOpciónLlevar();;break;
+			case "Devolver": tratarOpciónDevolver(); break;
 			}
 	
 		}
@@ -296,7 +303,69 @@ public class DialogReserva extends JDialog implements ListSelectionListener {
 				}
 			}
 		}
-
+		
+		private void tratarOpciónLlevar() {
+			int index = vTabla.getSelectedRow() ;
+			int opcion = JOptionPane.showConfirmDialog(DialogReserva.this,
+					"Quieres llevarte "+recurso.getNombre()+"?", "Llevar recurso",JOptionPane.YES_NO_OPTION);
+			
+			if(opcion == JOptionPane.YES_OPTION){
+				if(!recurso.isPrestado()){
+					if (!CheckerDevoluciones.isPenalizado(Sesion.getInstance().getUsuario())) {
+						DialogoLlevar dialogo = new DialogoLlevar(DialogReserva.this, true);
+						Calendar fechaFin = dialogo.getFechaFinal();
+						if (fechaFin != null){
+							Prestamo p = new Prestamo(Calendar.getInstance(), fechaFin,
+									Sesion.getInstance().getUsuario().getId(), recurso.getId());
+							try {
+								DAOPrestamos.addPrestamo(p);
+							} catch (Exception e) {
+								System.out.println("Error añadiendo el prestamo");
+							}
+						}
+					}else{
+						JOptionPane.showMessageDialog(	DialogReserva.this,
+														"Pues no puedes porque estas penalizado", 
+														"Va a ser que no", 
+														JOptionPane.ERROR_MESSAGE, 
+														new ImageIcon("iconos/penalizar.jpg"));
+					}
+				}else{
+					JOptionPane.showMessageDialog(	DialogReserva.this,
+							"Este recurso no está disponible", 
+							"Va a ser que no", 
+							JOptionPane.ERROR_MESSAGE, 
+							new ImageIcon("iconos/kopeteaway.png"));
+				}
+			}
+				
+			System.out.println("Ha elegido llevar");	
+		}
+		
+		private void tratarOpciónDevolver() {
+			int index = vTabla.getSelectedRow() ;
+			int opcion = JOptionPane.showConfirmDialog(DialogReserva.this,
+				"Quieres devolver "+recurso.getNombre()+"?", "Devolver recurso",JOptionPane.YES_NO_OPTION);
+		
+			if(opcion == JOptionPane.YES_OPTION){
+				if (recurso.isPrestado() && recurso.getPrestatario().equals(Sesion.getInstance().getUsuario())) {
+					try {
+						Prestamo prestamo = recurso.getPrestamoActivo();
+						prestamo.setFechaDevolucion(Calendar.getInstance());
+						DAOPrestamos.actualizarFechasPrestamo(prestamo);
+					} catch (Exception e) {
+						System.out.println("Error actualizando el prestamo");
+					}
+				}else{
+					JOptionPane.showMessageDialog(	DialogReserva.this,
+													"Este recurso no está a tu nombre", 
+													"Va a ser que no", 
+													JOptionPane.ERROR_MESSAGE, 
+													new ImageIcon("iconos/return.png"));
+				}
+			}
+			System.out.println("Ha elegido devolver");
+		}
 	}
 
 	@Override

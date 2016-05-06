@@ -289,14 +289,13 @@ public class DAOPrestamos
 	             " FROM Prestamo"+
 	             " WHERE fechaDevolucion is null";
 	      result = stmt.executeQuery(strSQL);
-	      if(!result.next()) throw new Exception("sentencia errónea: " + strSQL);
+	      if(!result.next()) throw new Exception("No se han encontrado prestamos no devueltos");
 				do {
 					resultado.add(buscarPorId(result.getInt("idPrestamo")));
 				} while (result.next());
 			
 	    } catch (Exception e){
 	    	System.out.println(e.getMessage());
-	    	e.printStackTrace();
 	    }
 	      return resultado;
 	}
