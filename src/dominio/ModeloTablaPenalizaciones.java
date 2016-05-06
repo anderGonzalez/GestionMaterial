@@ -69,10 +69,11 @@ public class ModeloTablaPenalizaciones extends AbstractTableModel {
 	public void actualizar() throws Exception {
 		
 		if(Sesion.getInstance().getUsuario().getIdTipoUsuario() == ADMINISTRADOR){
-			listaPenalizacion = DAOPenalizaciones.buscarPorDni("" + Sesion.getInstance().getUsuario().getId());
-			
-		}else{
 			listaPenalizacion = DAOPenalizaciones.obtenerPenalizaciones();
+
+		}else{
+			listaPenalizacion = DAOPenalizaciones.buscarPorDni("" + Sesion.getInstance().getUsuario().getId());
+
 		}
 		
 		this.fireTableDataChanged();

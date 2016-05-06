@@ -230,13 +230,11 @@ public class DialogoPenalizaciones extends JDialog {
 		private void tratarOpciónEditar() {
 			int index = vTabla.getSelectedRow();
 			Penalizacion penalizacion = tabla.getPenalizacionAt(index);
-			System.out.println(penalizacion.getDni() + " " + penalizacion.getfInicio());
 			DialogoPenalizacionesEditar dialogo = new DialogoPenalizacionesEditar (DialogoPenalizaciones.this 
 									,penalizacion, true);
 			if (dialogo.isCambioRealizado()){
 				 try {
 					tabla.actualizar();
-					vTabla.setRowSelectionInterval(index, index);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

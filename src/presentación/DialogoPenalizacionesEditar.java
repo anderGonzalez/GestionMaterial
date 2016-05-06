@@ -8,34 +8,33 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.toedter.calendar.JDateChooser;
+
 import dominio.Penalizacion;
 import dominio.Persona;
-import dominio.RecursoExtendido;
-import persistencia.DAOPersonas;
-import persistencia.DAORecursos;
+import persistencia.DAOPenalizaciones;
 
 public class DialogoPenalizacionesEditar extends JDialog implements ActionListener{
 	
 	final static String  TITULO = "EDITAR PENALIZACIONES";
 	JComboBox<String> comboResponsable;
-	JTextField txIdPersona,txIdPrestamo,txFInicio,txFFinal;
+	JTextField txIdPersona,txIdPrestamo;
+	JDateChooser txFInicio,txFFinal;
 	ArrayList<Persona> listaPersonas= null; 
 	boolean cambioRealizado = false;
-	Penalizacion penalizacion = null;
-	boolean editando = false;
+	Penalizacion penalizacionAntes = null, penalizacionesDespues = null;
 	
 	private void crearVentana() {
 		this.setLocation(280,200);
@@ -46,14 +45,13 @@ public class DialogoPenalizacionesEditar extends JDialog implements ActionListen
 
 	public DialogoPenalizacionesEditar(JDialog dialog, Penalizacion penalizacion, boolean modo) {
 		super(dialog, TITULO, modo);
-		this.penalizacion = penalizacion;
+		this.penalizacionAntes = penalizacion;
+
 		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 		crearVentana();
 		txIdPersona.setText("" + penalizacion.getDni());
 		txIdPrestamo.setText("" + penalizacion.getIdPrestamo());
-		txFInicio.setText( f.format(penalizacion.getfInicio().getTime()));
-		txFFinal.setText(f.format( penalizacion.getfFinal().getTime()));	
-		editando = true;
+		
 		this.setVisible(true);
 	}
 
@@ -81,11 +79,14 @@ public class DialogoPenalizacionesEditar extends JDialog implements ActionListen
 
 	private Component crearPanelCampos() {
 		JPanel panel = new JPanel (new GridLayout(4,1,0,20));
-				
+		String dateFormat ="yyyy-MM-dd  HH:mm";
+		txFInicio = new JDateChooser(penalizacionAntes.getfInicio().getTime(), dateFormat);
+		txFFinal = new JDateChooser(penalizacionAntes.getfFinal().getTime(), dateFormat);
+
 		panel.add(txIdPersona = crearCampo("Id Persona"));
 		panel.add(txIdPrestamo = crearCampo("Id Prestamo"));
-		panel.add(txFInicio = crearCampo("Fecha Inicio"));
-		panel.add(txFFinal = crearCampo("Fecha Final"));
+		panel.add(txFInicio );
+		panel.add(txFFinal);
 		
 		return panel;
 	}
@@ -98,23 +99,23 @@ public class DialogoPenalizacionesEditar extends JDialog implements ActionListen
 		return campo;
 	}
 
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()){
 		case "OK" : if (camposIncompletos()){
 						JOptionPane.showMessageDialog(this, "Es necesario rellenar todos los campos",
 								"Error datos incompletos", JOptionPane.ERROR_MESSAGE);
-					}else if (editando){
-						
+					}else{
+						penalizacionesDespues = new Penalizacion(this.getTxIdPersona()
+								,this.getTxFInicio(), this.getTxFFinal(),  this.getTxIdPrestamo());
+						DAOPenalizaciones.updatePenalizacion(penalizacionAntes, penalizacionesDespues);
 						JOptionPane.showMessageDialog(this, "Recurso actualizado",
 								"Accion realizada", JOptionPane.INFORMATION_MESSAGE);
-					}else{
-						DAORecursos.InsertarRecurso(txIdPersona.getText(), txFInicio.getText(),
-								txIdPrestamo.getText(), listaPersonas.get(comboResponsable.getSelectedIndex()).getId());
-						JOptionPane.showMessageDialog(this, "Recurso añadido",
-								"Accion realizada", JOptionPane.INFORMATION_MESSAGE);
+						cambioRealizado = true;
+
 					}
-					this.cambioRealizado = true;
+						
 					this.dispose();
 					break;
 					
@@ -124,9 +125,28 @@ public class DialogoPenalizacionesEditar extends JDialog implements ActionListen
 		
 	}
 
+	public Calendar getTxFInicio() {
+		return txFInicio.getCalendar();
+	}
+
+	
+	public Calendar getTxFFinal() {
+		return txFFinal.getCalendar();
+	}
+
+	public Integer getTxIdPersona() {
+		return new Integer(txIdPersona.getText());
+	}
+
+	public Integer getTxIdPrestamo() {
+		return new Integer(txIdPrestamo.getText());
+	}
+
+
+
 	private boolean camposIncompletos() {
 		
-		return txIdPersona.getText().length()==0 ||txFInicio.getText().length()==0 || txIdPrestamo.getText().length()==0;
+		return txIdPersona.getText().length()==0  || txIdPrestamo.getText().length()==0;
 	}
 
 	public boolean isCambioRealizado() {

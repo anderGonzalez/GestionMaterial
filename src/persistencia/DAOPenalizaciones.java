@@ -2,6 +2,7 @@ package persistencia;
 
 import java.sql.*;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import dominio.Penalizacion;
 
@@ -110,13 +111,14 @@ public class DAOPenalizaciones {
 		String strSQL;
 
 		try {
-			Date fInicio, fFin;
-			fInicio = new Date(p.getfInicio().getTimeInMillis());
-			fFin = new Date(p.getfFinal().getTimeInMillis());
+			String fInicio, fFin;
+			SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+			fInicio = f.format(p.getfInicio().getTime());
+			fFin = f.format(p.getfFinal().getTime());
 			
 			stmt = PoolConexiones.getConexion().createStatement();
-			strSQL = "INSERT INTO Penalizaciones (dniPenalizado, idPrestamo,fechaInicio,fechaFin)" + " VALUES ('"
-					+ p.getDni() + "','" + p.getIdPrestamo() + "','" + fInicio + "','" + fFin + "')";
+			strSQL = "INSERT INTO Penalizaciones (dniPenalizado, idPrestamo,fechaInicio,fechaFin)" + " VALUES ("
+					+ p.getDni() + "," + p.getIdPrestamo() + ",'" + fInicio + "','" + fFin + "')";
 			stmt.executeUpdate(strSQL);
 			return true;
 		}
@@ -125,5 +127,37 @@ public class DAOPenalizaciones {
 			return false;
 		}
 	}
+	static public boolean deletePenalizacion(Penalizacion pdelete) throws Exception {
+		Statement stmt;
+		String strSQL;
+
+		try {
+			String fInicio;
+			SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+			fInicio = f.format(pdelete.getfInicio().getTime());
+		
+			stmt = PoolConexiones.getConexion().createStatement();
+			strSQL = "DELETE FROM Penalizaciones WHERE dniPenalizado=" + pdelete.getDni()+" and idPrestamo="
+					 + pdelete.getIdPrestamo() + " and fechaInicio= '" + fInicio + "'";
+			stmt.executeUpdate(strSQL);
+			return true;
+		}
+
+		catch (SQLException e) {
+			return false;
+		}
+	}
+	static public void updatePenalizacion(Penalizacion antes, Penalizacion despues) {
+		try {
+			deletePenalizacion(antes);
+			addPenalizacion(despues);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+	}
+
 
 }
