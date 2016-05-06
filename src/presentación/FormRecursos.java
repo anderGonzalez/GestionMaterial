@@ -227,6 +227,13 @@ public class FormRecursos extends JFrame implements ListSelectionListener {
 			case "Llevar": tratarOpciónLlevar();break;
 			case "Devolver": tratarOpciónDevolver(); break;
 			}
+			try {
+				tabla.actualizar();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 	
 		}
 		
