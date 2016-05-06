@@ -1,2 +1,2 @@
 user = root
-password = saizarcomerabo
+password = 1234
