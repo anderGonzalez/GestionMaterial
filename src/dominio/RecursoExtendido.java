@@ -25,7 +25,7 @@ public class RecursoExtendido extends Recurso {
 	}
 	private Estado identificarEstadoActualRecurso(int id) {
 		LocalDateTime ahora = LocalDateTime.now();
-		if (DAOPrestamos.estaPrestado(id,ahora)) return Estado.PRESTADO;
+		if (this.isPrestado()) return Estado.PRESTADO;
 		if (DAOReservas.estaReservado(id,ahora)) return Estado.RESERVADO;
 		
 		return Estado.DISPONIBLE;

@@ -7,6 +7,7 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -199,24 +200,33 @@ public class DialogoDatosReserva extends JDialog implements ActionListener,Prope
 						
 							DAOReservas.modificarReserva(reserva.getId(),desde, hasta,
 									Integer.valueOf(Integer.valueOf(txUrgencia.getText()).intValue()));
+							this.cambioRealizado = true;
+							this.dispose();
 									
 						} catch (SQLException e1) {
-							
 							e1.printStackTrace();
+						} catch (NumberFormatException e1) {
+							JOptionPane.showMessageDialog(this,"Se debe introducir la urgencia", "ERROR",
+				    			    JOptionPane.ERROR_MESSAGE);
 						}
 						JOptionPane.showMessageDialog(this, "Reserva actualizada",
 								"Accion realizada", JOptionPane.INFORMATION_MESSAGE);
 				}else{
 						
-						DAOReservas.insertarReserva(new Reserva(0,this.persona,this.recurso, 
-								this.desde, this.hasta, Integer.valueOf(txUrgencia.getText())));
-						JOptionPane.showMessageDialog(this, "Reserva añadida",
-								"Accion realizada", JOptionPane.INFORMATION_MESSAGE);
-				
-					}
-					this.cambioRealizado = true;
-					this.dispose();
-					
+						try {
+							DAOReservas.insertarReserva(new Reserva(0,this.persona,this.recurso, 
+									this.desde, this.hasta, Integer.valueOf(txUrgencia.getText())));
+							JOptionPane.showMessageDialog(this, "Reserva añadida",
+									"Accion realizada", JOptionPane.INFORMATION_MESSAGE);
+							this.cambioRealizado = true;
+							this.dispose();
+						} catch (NumberFormatException e1) {
+							JOptionPane.showMessageDialog(this,"Se debe introducir la urgencia", "ERROR",
+				    			    JOptionPane.ERROR_MESSAGE);
+						} catch (HeadlessException e1) {
+							e1.printStackTrace();
+						}
+					}		
 			}
 			break;
 			

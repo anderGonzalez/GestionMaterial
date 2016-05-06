@@ -27,7 +27,7 @@ CREATE TABLE persona
 INSERT INTO persona VALUES (default,'Oier','1234','osaizar','oier.saizar@alumni.mondragon.edu',2);
 INSERT INTO persona VALUES (default,'Ander','1234','agonzalez','ander.gonzalez.t@alumni.mondragon.edu',2);
 INSERT INTO persona VALUES (default,'Joanes','1234','jplazaola','joanes.plazaola@alumni.mondragon.edu',2);
-INSERT INTO persona VALUES (default,'root','root','root','SoyRootNoNecesitoCorreo',1);
+INSERT INTO persona VALUES (default,'root','root','root','root@root.com',1);
 
 
 CREATE TABLE recurso 
@@ -41,10 +41,15 @@ CREATE TABLE recurso
  CONSTRAINT fk_recurso_persona FOREIGN KEY (dniResponsable) REFERENCES persona(dni)
 );
 
-INSERT INTO recurso VALUES (default,'Portatil-1','Portatil Depto. Nº1','Secretaria',1);
-INSERT INTO recurso VALUES (default,'Portatil-2','Portatil Depto. Nº2','Secretaria',1);
-INSERT INTO recurso VALUES (default,'Telf-1','Smartphone Nº1','Secretaria',2);
-INSERT INTO recurso VALUES (default,'Modem3G-1','Modem USB 3G Nº1','Secretaria',3);
+INSERT INTO recurso VALUES (default,'Portatil-1','Portatil Depto. N1','Secretaria',1);
+INSERT INTO recurso VALUES (default,'Portatil-2','Portatil Depto. N2','Secretaria',1);
+INSERT INTO recurso VALUES (default,'Telf-1','Smartphone N1','Secretaria',2);
+INSERT INTO recurso VALUES (default,'Modem3G-1','Modem USB 3G N1','Secretaria',3);
+
+INSERT INTO recurso VALUES (default,'Impresora canon','Impresora Depto. N3','Secretaria',2);
+INSERT INTO recurso VALUES (default,'Router cisco','Router 5864 para labs','Lab 1324',1);
+INSERT INTO recurso VALUES (default,'Saco de patatas','Vacio, sin patatas. Para carreras','Secretaria',2);
+INSERT INTO recurso VALUES (default,'Grapadora','Automatica, grapas no incluidas','Secretaria',3);
 
 CREATE TABLE reserva
 (
@@ -58,12 +63,6 @@ CREATE TABLE reserva
  CONSTRAINT fk_reserva_persona FOREIGN KEY (dniPeticionario) REFERENCES persona(dni),
  CONSTRAINT fk_reserva_recurso FOREIGN KEY (idRecurso) REFERENCES recurso(idRecurso)
 );
-
-INSERT INTO reserva  VALUES (default, '2016-02-08', '2016-02-10', 1, 1, 1);
-INSERT INTO reserva  VALUES (default, '2016-02-15', '2016-02-19', 1, 1, 1);
-INSERT INTO reserva  VALUES (default, '2016-02-15', '2016-02-17', 2, 2, 3);
-INSERT INTO reserva  VALUES (default, '2016-02-15', '2016-02-18', 2, 3, 2);
-
 
 
 CREATE TABLE prestamo
@@ -90,6 +89,3 @@ CREATE TABLE penalizaciones
  CONSTRAINT fk_penalizaciones_persona FOREIGN KEY (dniPenalizado) REFERENCES persona(dni),
  CONSTRAINT fk_penalizaciones_prestamo FOREIGN KEY (idPrestamo) REFERENCES prestamo(idPrestamo)
 );
-
-INSERT INTO prestamo (idPrestamo,idRecurso,dniPrestatario,fechaInicio,fechaFin,fechaDevolucion, fechaUltimaNotificacion)  
-			VALUES (default, 1, 1, '2016-02-08', '2016-02-10', null, null);
