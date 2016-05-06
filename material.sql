@@ -41,12 +41,12 @@ CREATE TABLE recurso
  CONSTRAINT fk_recurso_persona FOREIGN KEY (dniResponsable) REFERENCES persona(dni)
 );
 
-INSERT INTO recurso VALUES (default,'Portatil-1','Portatil Depto. Nº1','Secretaria',1);
-INSERT INTO recurso VALUES (default,'Portatil-2','Portatil Depto. Nº2','Secretaria',1);
-INSERT INTO recurso VALUES (default,'Telf-1','Smartphone Nº1','Secretaria',2);
-INSERT INTO recurso VALUES (default,'Modem3G-1','Modem USB 3G Nº1','Secretaria',3);
+INSERT INTO recurso VALUES (default,'Portatil-1','Portatil Depto. N1','Secretaria',1);
+INSERT INTO recurso VALUES (default,'Portatil-2','Portatil Depto. N2','Secretaria',1);
+INSERT INTO recurso VALUES (default,'Telf-1','Smartphone N1','Secretaria',2);
+INSERT INTO recurso VALUES (default,'Modem3G-1','Modem USB 3G N1','Secretaria',3);
 
-INSERT INTO recurso VALUES (default,'Impresora canon','Impresora Depto. Nº3','Secretaria',2);
+INSERT INTO recurso VALUES (default,'Impresora canon','Impresora Depto. N3','Secretaria',2);
 INSERT INTO recurso VALUES (default,'Router cisco','Router 5864 para labs','Lab 1324',1);
 INSERT INTO recurso VALUES (default,'Saco de patatas','Vacio, sin patatas. Para carreras','Secretaria',2);
 INSERT INTO recurso VALUES (default,'Grapadora','Automatica, grapas no incluidas','Secretaria',3);
