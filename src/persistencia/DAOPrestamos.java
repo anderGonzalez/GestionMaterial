@@ -119,9 +119,7 @@ public class DAOPrestamos
       try{
     	  calUlt.setTime(result.getTimestamp("fechaUltimaNotificacion",calUlt));
       }catch(NullPointerException e){
-    	  calUlt.set(Calendar.YEAR, 2001);
-    	  calUlt.set(Calendar.MONTH, Calendar.SEPTEMBER);
-    	  calUlt.set(Calendar.DAY_OF_MONTH, 11);  	  
+    	  calUlt = null;
       }
       try{
     	  calDev.setTime(result.getTimestamp("fechaDevolucion",calDev));

@@ -167,7 +167,7 @@ public class CheckerDevoluciones {
 
 	private static boolean checkUltimaNotif(Prestamo p) {
 		int dif = 0;
-		if(p.getFechaUltimaNotificicacion().equals(null)) return true;
+		if(p.getFechaUltimaNotificicacion() == null) return true;
 		dif = (int) (( Calendar.getInstance().getTimeInMillis() - p.getFechaUltimaNotificicacion().getTimeInMillis())/86400000);
 		return dif >= 1;
 	}
